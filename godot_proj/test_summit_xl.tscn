@@ -1,0 +1,116 @@
+[gd_scene load_steps=8 format=3 uid="uid://ckepjw8mau4i7"]
+
+[ext_resource type="PackedScene" uid="uid://bgeebur0s30ju" path="res://dae/summit_xl_chassis.dae" id="1_wpltg"]
+[ext_resource type="PackedScene" uid="uid://2m7crec0o4wp" path="res://dae/rubber_wheel_right.dae" id="2_w8nsx"]
+[ext_resource type="PackedScene" uid="uid://dkaa31pxpg4ge" path="res://dae/rubber_wheel_left.dae" id="3_rj7k8"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_b2e1b"]
+size = Vector3(0.6, 0.2, 0.4)
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_f3omr"]
+height = 0.15
+radius = 0.1
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_r5g31"]
+size = Vector3(100, 0.1, 100)
+
+[sub_resource type="BoxMesh" id="BoxMesh_oc6w8"]
+size = Vector3(100, 0.05, 100)
+
+[node name="root" type="Node3D"]
+
+[node name="robot" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.188647, 0)
+
+[node name="rb_chassis" type="RigidBody3D" parent="robot"]
+
+[node name="summit_xl_chassis" parent="robot/rb_chassis" instance=ExtResource("1_wpltg")]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="robot/rb_chassis"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.160976, 0)
+shape = SubResource("BoxShape3D_b2e1b")
+
+[node name="Camera3D" type="Camera3D" parent="robot/rb_chassis"]
+transform = Transform3D(0.758734, 0.305408, -0.575369, -0.0710815, 0.916822, 0.392918, 0.647511, -0.257222, 0.717333, -1.07295, 0.779944, 1.66244)
+current = true
+
+[node name="joint_wheel_right_front" type="HingeJoint3D" parent="robot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.233, 0.002, 0.233)
+node_a = NodePath("../rb_chassis")
+node_b = NodePath("../rb_wheel_right_front")
+params/bias = 0.99
+motor/enable = true
+motor/target_velocity = 3.0
+
+[node name="joint_wheel_left_front" type="HingeJoint3D" parent="robot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.233, 0, -0.233)
+node_a = NodePath("../rb_chassis")
+node_b = NodePath("../rb_wheel_left_front")
+params/bias = 0.99
+motor/enable = true
+motor/target_velocity = 3.0
+
+[node name="joint_wheel_right_back" type="HingeJoint3D" parent="robot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.233, 0, 0.233)
+node_a = NodePath("../rb_chassis")
+node_b = NodePath("../rb_wheel_right_back")
+params/bias = 0.99
+
+[node name="joint_wheel_left_back" type="HingeJoint3D" parent="robot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.233, 0, -0.233)
+node_a = NodePath("../rb_chassis")
+node_b = NodePath("../rb_wheel_left_back")
+params/bias = 0.99
+
+[node name="rb_wheel_right_front" type="RigidBody3D" parent="robot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.234, 0, 0.233)
+
+[node name="wheel_right_front" parent="robot/rb_wheel_right_front" instance=ExtResource("2_w8nsx")]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="robot/rb_wheel_right_front"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0)
+shape = SubResource("CylinderShape3D_f3omr")
+
+[node name="rb_wheel_right_back" type="RigidBody3D" parent="robot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.231, 0, 0.233)
+
+[node name="wheel_right_back" parent="robot/rb_wheel_right_back" instance=ExtResource("2_w8nsx")]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="robot/rb_wheel_right_back"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0)
+shape = SubResource("CylinderShape3D_f3omr")
+
+[node name="rb_wheel_left_front" type="RigidBody3D" parent="robot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.233307, 0, -0.23838)
+
+[node name="wheel_left_front" parent="robot/rb_wheel_left_front" instance=ExtResource("3_rj7k8")]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="robot/rb_wheel_left_front"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0)
+shape = SubResource("CylinderShape3D_f3omr")
+
+[node name="rb_wheel_left_back" type="RigidBody3D" parent="robot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.229904, 0, -0.22971)
+
+[node name="wheel_left_back" parent="robot/rb_wheel_left_back" instance=ExtResource("3_rj7k8")]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="robot/rb_wheel_left_back"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0)
+shape = SubResource("CylinderShape3D_f3omr")
+
+[node name="ground_plane" type="StaticBody3D" parent="."]
+disable_mode = 1
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="ground_plane"]
+shape = SubResource("BoxShape3D_r5g31")
+
+[node name="ground_plane_mesh" type="MeshInstance3D" parent="ground_plane"]
+mesh = SubResource("BoxMesh_oc6w8")
+
+[node name="CSensorBasicCamera" type="CSensorBasicCamera" parent="."]
+ros1_node_name = "summit_xl_front_camera"
+ros1_topic_name = "summit_xl_front_camera_image"
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 0, 0, 0)
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 10.6568, 0)

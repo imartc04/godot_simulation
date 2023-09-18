@@ -1,0 +1,30 @@
+@startuml
+package "Godot ecosystem" {
+
+ [Godot editor] -> tscn
+ [Virtual sensor node] - ros_msg_godot
+ 
+ [Joint controller node] -down-> ros_control
+ [Joint controller node] -left-> ros_msg_ros
+ [Joint controller node] -up-> ros2_control
+
+}
+
+
+node "ROS ecosystem" {
+
+[ROS node ros2_control controller] - ros2_control
+[ROS node ros_control controller] - ros_control
+[ROS node publisher] - ros_msg_ros
+  [ROS node data listener] -> ros_msg_godot
+  
+}
+
+"ROS ecosystem" -[hidden]D- "Godot ecosystem"
+
+urdf - [URDF file]
+
+
+tscn - [Urdf_parser]
+[Urdf_parser] -> urdf
+@enduml

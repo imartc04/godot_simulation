@@ -1,0 +1,27 @@
+apt update && apt-get install -y libfontconfig1 libxcursor1 &&  apt-get install -y libxkbcommon0 libxext6 && apt-get install -y libxkbcommon0 libxinerama1 && apt-get install -y libxkbcommon0 libxrandr2 && apt-get install -y libxkbcommon0 libxi6 && apt install -y vulkan-utils 
+
+
+
+
+
+Docker run commands:
+
+sudo docker run --gpus all -it --rm --privileged --net=host -e DISPLAY=$DISPLAY -v /home/yo/Desktop/tfm/:/tfm  -v /tmp/.X11-unix:/tmp/.X11-unix -v $XAUTHORITY:$XAUTHORITY -e XAUTHORITY=$XAUTHORITY nvidia/cuda:12.2.0-devel-ubuntu20.04
+
+Then install godot game engine build deps
+
+apt-get install \
+  build-essential \
+  scons \
+  pkg-config \
+  libx11-dev \
+  libxcursor-dev \
+  libxinerama-dev \
+  libgl1-mesa-dev \
+  libglu-dev \
+  libasound2-dev \
+  libpulse-dev \
+  libudev-dev \
+  libxi-dev \
+  libxrandr-dev \
+  vulkan-utils 

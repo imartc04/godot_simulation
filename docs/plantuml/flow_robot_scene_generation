@@ -1,0 +1,21 @@
+@startuml
+start
+if (Using URDF importer?) then (yes)
+ : Automatic importer create \nGodot project folder with everything included;
+ : Refine possible erroneous imported elements \n due imposibility of deduction by URDF importer\n like collision shapes orientations;
+else (no)
+ :Create Godot project with editor;
+ :Add Godot extensions to comunicate robot\n with ROS and ROS2 ecosystem;
+ :Copy 3D models into Godot project;
+ :Create new scene in Godot editor;
+ :Create collision geometries for 3D models;
+ :Create and parametrize sensor elements; 
+ :Create and parametrize robot joint controllers;
+ 
+endif
+
+:Define scenario with techniques avaliables in Godot\n(possible complex definitions like scripting for a multi agent use case \ncreating simultaneous scenarios as is made in Nvidia Isaac Sim);
+:Run simulation;  
+
+stop
+@enduml
