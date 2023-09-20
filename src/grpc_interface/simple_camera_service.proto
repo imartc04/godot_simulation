@@ -1,0 +1,44 @@
+
+syntax = "proto3";
+package godot_grpc.simple_camera_service;
+
+import "commonMessages.proto";
+import "ros1.proto";
+
+
+message imageRequestMsg {
+}
+
+
+//Image type similar to ROS std_msgs/Image
+  message imageMsg {
+      uint32 height = 1;
+      uint32 width = 2;
+      string encoding = 3;
+      bool is_bigendian = 4;
+      uint32 step = 5;
+      repeated uint32 uint8_data = 6;
+      uint64 frame_id = 7;
+  }
+
+
+
+//Service to send image data
+service SimpleCameraService {
+    // Sends image
+    rpc getImage (imageRequestMsg) returns (imageMsg) {}
+
+    //Get ROS topic config
+    rpc  getROSConfig(godot_grpc.emptyMsg) returns (godot_grpc.ros1.ROS1PublisherConfig) {}
+
+    /**
+    Set client status
+    Used by the client to notify several conditions : 
+    -  0 :  The node process closes it withouth problems
+    -  1 : The node is up but not running due some configuration error
+    -  2 : The node is down, need to be restarted
+  
+    */
+    rpc setClientStatus (godot_grpc.uint32Msg) returns (godot_grpc.emptyMsg) {}
+
+}

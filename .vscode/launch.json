@@ -1,0 +1,83 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "gcc debug godot ros",
+            "cwd": "${workspaceFolder}/src",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "/root/Godot_v4.1.1-stable_linux.x86_64",
+            "additionalSOLibSearchPath": "/opt/ros/noetic/lib/;/usr/lib/x86_64-linux-gnu/",
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "logging": {
+                "moduleLoad": false,
+                "trace": true,
+                "exceptions": true,
+                "programOutput": true,
+            },
+            //"visualizerFile": "${workspaceFolder}/my.natvis",
+            "showDisplayString": true,
+            // "args": [
+            //     "--path",
+            //     "${workspaceFolder}/repo_tfm_WIP/godot_proj",
+            //     "res://test_summit_xl.tscn"
+            // ],
+            "args": [
+                //"--editor",
+                // "--path",
+                // "${workspaceFolder}/repo_tfm_WIP/godot_proj",
+                "${workspaceFolder}/godot_proj/project.godot",
+                "--editor"
+            ],
+            "setupCommands": [
+                {
+                    "text": "-enable-pretty-printing",
+                    "description": "Enable pretty printers"
+                }
+            ],
+            "preLaunchTask": "gcc build_godot_ros",
+          
+        },
+
+        {
+            "name": "llvm debug godot ros",
+            "cwd": "${workspaceFolder}/src",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "/root/Godot_v4.1.1-stable_linux.x86_64",
+            "additionalSOLibSearchPath": "/opt/ros/noetic/lib/;/usr/lib/x86_64-linux-gnu/",
+            "externalConsole": false,
+            "miDebuggerPath": "/usr/bin/lldb",
+            "MIMode": "lldb",
+            "logging": {
+                "moduleLoad": false,
+                "trace": true,
+                "exceptions": true,
+                "programOutput": true,
+            },
+            //"visualizerFile": "${workspaceFolder}/my.natvis",
+            "showDisplayString": true,
+            // "args": [
+            //     "--path",
+            //     "${workspaceFolder}/repo_tfm_WIP/godot_proj",
+            //     "res://test_summit_xl.tscn"
+            // ],
+            "args": [
+                //"--editor",
+                // "--path",
+                // "${workspaceFolder}/repo_tfm_WIP/godot_proj",
+                "${workspaceFolder}/godot_proj/project.godot",
+                "--editor"
+            ],
+            "setupCommands": [
+                {
+                    "text": "-enable-pretty-printing",
+                    "description": "Enable pretty printers"
+                }
+            ],
+            "preLaunchTask": "clang build_godot_ros",
+          
+        }
+    ]
+}

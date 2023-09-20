@@ -1,0 +1,145 @@
+scons: Reading SConscript files ...
+original_cwd:  /tfm/godot_simulation/build
+l_repo_base_path:  ./../
+WARNING: Unknown SCons variables were passed and will be ignored:
+    use_gcc=True
+Auto-detected 20 CPU cores available for build parallelism. Using 19 cores by default. You can override it with the -j argument.
+Building for architecture x86_64 on platform linux
+use_gcc,  True  type(use_gcc)  <class 'bool'>
+Configuring for gcc
+Adding ROS includes ...
+Done
+ros_libs:  {'file_names': ['librobot_state_publisher_solver', 'librqt_image_view', 'libroslib', 'libimage_transport', 'libtf2', 'libtopic_tools', 'libdiagnostic_aggregator', 'libcontroller_manager', 'librosconsole_log4cxx', 'libroscpp_serialization', 'libroscpp', 'libtf2_ros', 'libdiff_drive_controller', 'libdiagnostic_updater', 'liburdf', 'libnodeletlib', 'librviz_default_plugin', 'libtransmission_interface_parser', 'libeigen_conversions', 'libresource_retriever', 'libforce_torque_sensor_controller', 'librospack', 'libtf', 'libtransfer_function', 'librviz', 'libjoint_trajectory_controller', 'libmessage_filters', 'libdynamic_reconfigure_config_init_mutex', 'libcpp_common', 'libeffort_controllers', 'librostime', 'libactionlib', 'librqt_rviz', 'libposition_controllers', 'librosbag_default_encryption_plugins', 'libkdl_parser', 'libqt_gui_cpp', 'libinteractive_markers', 'libbondcpp', 'libroslz4', 'librosbag', 'librosconsole', 'libcv_bridge', 'libimu_sensor_controller', 'liblaser_geometry', 'libxmlrpcpp', 'libkdl_conversions', 'libcombined_robot_hw', 'librviz_plugin_tutorials', 'librosconsole_backend_interface', 'libparams', 'libclass_loader', 'libackermann_steering_controller', 'librosconsole_bridge', 'libjoint_state_listener', 'libtransmission_interface_loader_plugins', 'libmedian', 'librealtime_tools', 'libnodelet_math', 'libmean', 'libjoint_state_controller', 'libincrement', 'libtf_conversions', 'libpluginlib_tutorials', 'libimage_transport_plugins', 'librosbag_storage', 'librqt_gui_cpp', 'libtransmission_interface_loader', 'libgripper_action_controller', 'libvelocity_controllers', 'libcontrol_toolbox'], 'paths': ['/opt/ros/noetic/lib/', '/opt/ros/noetic/lib/', '/opt/ros/noetic/lib/', '/opt/ros/noetic/lib/', '/opt/ros/noetic/lib/', '/opt/ros/noetic/lib/', '/opt/ros/noetic/lib/', '/opt/ros/noetic/lib/', '/opt/ros/noetic/lib/', '/opt/ros/noetic/lib/', '/opt/ros/noetic/lib/', '/opt/ros/noetic/lib/', '/opt/ros/noetic/lib/', '/opt/ros/noetic/lib/', '/opt/ros/noetic/lib/', '/opt/ros/noetic/lib/', '/opt/ros/noetic/lib/', '/opt/ros/noetic/lib/', '/opt/ros/noetic/lib/', '/opt/ros/noetic/lib/', '/opt/ros/noetic/lib/', '/opt/ros/noetic/lib/', '/opt/ros/noetic/lib/', '/opt/ros/noetic/lib/', '/opt/ros/noetic/lib/', '/opt/ros/noetic/lib/', '/opt/ros/noetic/lib/', '/opt/ros/noetic/lib/', '/opt/ros/noetic/lib/', '/opt/ros/noetic/lib/', '/opt/ros/noetic/lib/', '/opt/ros/noetic/lib/', '/opt/ros/noetic/lib/', '/opt/ros/noetic/lib/', '/opt/ros/noetic/lib/', '/opt/ros/noetic/lib/', '/opt/ros/noetic/lib/', '/opt/ros/noetic/lib/', '/opt/ros/noetic/lib/', '/opt/ros/noetic/lib/', '/opt/ros/noetic/lib/', '/opt/ros/noetic/lib/', '/opt/ros/noetic/lib/', '/opt/ros/noetic/lib/', '/opt/ros/noetic/lib/', '/opt/ros/noetic/lib/', '/opt/ros/noetic/lib/', '/opt/ros/noetic/lib/', '/opt/ros/noetic/lib/', '/opt/ros/noetic/lib/', '/opt/ros/noetic/lib/', '/opt/ros/noetic/lib/', '/opt/ros/noetic/lib/', '/opt/ros/noetic/lib/', '/opt/ros/noetic/lib/', '/opt/ros/noetic/lib/', '/opt/ros/noetic/lib/', '/opt/ros/noetic/lib/', '/opt/ros/noetic/lib/', '/opt/ros/noetic/lib/', '/opt/ros/noetic/lib/', '/opt/ros/noetic/lib/', '/opt/ros/noetic/lib/', '/opt/ros/noetic/lib/', '/opt/ros/noetic/lib/', '/opt/ros/noetic/lib/', '/opt/ros/noetic/lib/', '/opt/ros/noetic/lib/', '/opt/ros/noetic/lib/', '/opt/ros/noetic/lib/', '/opt/ros/noetic/lib/']}
+scons: done reading SConscript files.
+scons: Building targets ...
+scons: `deps/godot-cpp/bin/libgodot-cpp.linux.template_debug.x86_64.a' is up to date.
+g++ -o src/ros_interface/ros1/ros1_pub_node.linux.template_debug.x86_64.o -c -g -O0 -fPIC -std=c++17 -DDEBUG -DDEBUG_ENABLED -Ideps/godot-cpp/gdextension -Ideps/godot-cpp/include -Ideps/godot-cpp/gen/include -I/usr/include -I/opt/ros/noetic/include -Ibuild -Isrc -Ibuild/deps/grpc_installed/include src/ros_interface/ros1/ros1_pub_node.cpp
+g++ -o src/virtual_sensors/camera/basic_camera.os -c -g -O0 -fPIC -std=c++17 -fPIC -DDEBUG -DDEBUG_ENABLED -Ideps/godot-cpp/gdextension -Ideps/godot-cpp/include -Ideps/godot-cpp/gen/include -I/usr/include -I/opt/ros/noetic/include -Ibuild -Isrc -Ibuild/deps/grpc_installed/include src/virtual_sensors/camera/basic_camera.cpp
+g++ -o src/godot_register_types/godot_ros_register_types.os -c -g -O0 -fPIC -std=c++17 -fPIC -DDEBUG -DDEBUG_ENABLED -Ideps/godot-cpp/gdextension -Ideps/godot-cpp/include -Ideps/godot-cpp/gen/include -I/usr/include -I/opt/ros/noetic/include -Ibuild -Isrc -Ibuild/deps/grpc_installed/include src/godot_register_types/godot_ros_register_types.cpp
+In file included from src/ros_interface/ros1/ros1_pub_node.cpp:1:
+src/ros_interface/ros1/ros1_pub.hpp: In instantiation of 'void godot::CRos1Publisher<t_message_type>::publish_loop() [with t_message_type = sensor_msgs::Image_<std::allocator<void> >]':
+src/ros_interface/ros1/ros1_pub.hpp:306:14:   required from here
+src/ros_interface/ros1/ros1_pub.hpp:317:64: error: 'class godot_grpc::ros1::ROS1PublisherConfig' has no member named 'pub_info'
+  317 |                         auto l_message = m_config.proto_config.pub_info.f_get_message();
+      |                                          ~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~
+scons: *** [src/ros_interface/ros1/ros1_pub_node.linux.template_debug.x86_64.o] Error 1
+In file included from src/virtual_sensors/camera/basic_camera.hpp:16,
+                 from src/virtual_sensors/camera/basic_camera.cpp:2:
+src/virtual_sensors/base_sensor.hpp:52:9: error: 'CRosPublisherConfig' does not name a type; did you mean 'CRos1PublisherConfig'?
+   52 |         CRosPublisherConfig<t_ros_msg> ros1_pub_config;
+      |         ^~~~~~~~~~~~~~~~~~~
+      |         CRos1PublisherConfig
+In file included from src/virtual_sensors/camera/basic_camera.hpp:16,
+                 from src/godot_register_types/godot_ros_register_types.cpp:12:
+src/virtual_sensors/base_sensor.hpp:52:9: error: 'CRosPublisherConfig' does not name a type; did you mean 'CRos1PublisherConfig'?
+   52 |         CRosPublisherConfig<t_ros_msg> ros1_pub_config;
+      |         ^~~~~~~~~~~~~~~~~~~
+      |         CRos1PublisherConfig
+In file included from src/virtual_sensors/camera/basic_camera.hpp:12,
+                 from src/virtual_sensors/camera/basic_camera.cpp:2:
+src/virtual_sensors/camera/basic_camera.cpp: In member function 'void godot::CSensorBasicCamera::set_ros1_node_name(godot::String)':
+src/ros_interface/ros1/ros1_pub.hpp:39:53: error: 'struct godot::CBaseSensorConfig<sensor_msgs::Image_<std::allocator<void> > >' has no member named 'ros1_pub_config'
+   39 |         MEMBER_NAME.get_config().base_sensor_config.ros1_pub_config.node_name = f_node_name.utf8().get_data();                      \
+      |                                                     ^~~~~~~~~~~~~~~
+src/ros_interface/ros1/ros1_pub.hpp:39:53: note: in definition of macro 'GDROS1PUB_DEF_METHODS'
+   39 |         MEMBER_NAME.get_config().base_sensor_config.ros1_pub_config.node_name = f_node_name.utf8().get_data();                      \
+      |                                                     ^~~~~~~~~~~~~~~
+src/virtual_sensors/camera/basic_camera.cpp: In member function 'godot::String godot::CSensorBasicCamera::get_ros1_node_name()':
+src/ros_interface/ros1/ros1_pub.hpp:44:60: error: 'struct godot::CBaseSensorConfig<sensor_msgs::Image_<std::allocator<void> > >' has no member named 'ros1_pub_config'
+   44 |         return MEMBER_NAME.get_config().base_sensor_config.ros1_pub_config.node_name.c_str();                                       \
+      |                                                            ^~~~~~~~~~~~~~~
+src/ros_interface/ros1/ros1_pub.hpp:44:60: note: in definition of macro 'GDROS1PUB_DEF_METHODS'
+   44 |         return MEMBER_NAME.get_config().base_sensor_config.ros1_pub_config.node_name.c_str();                                       \
+      |                                                            ^~~~~~~~~~~~~~~
+src/virtual_sensors/camera/basic_camera.cpp: In member function 'void godot::CSensorBasicCamera::set_ros1_topic_name(godot::String)':
+src/ros_interface/ros1/ros1_pub.hpp:49:53: error: 'struct godot::CBaseSensorConfig<sensor_msgs::Image_<std::allocator<void> > >' has no member named 'ros1_pub_config'
+   49 |         MEMBER_NAME.get_config().base_sensor_config.ros1_pub_config.topic_name = f_topic_name.utf8().get_data();                    \
+      |                                                     ^~~~~~~~~~~~~~~
+src/ros_interface/ros1/ros1_pub.hpp:49:53: note: in definition of macro 'GDROS1PUB_DEF_METHODS'
+   49 |         MEMBER_NAME.get_config().base_sensor_config.ros1_pub_config.topic_name = f_topic_name.utf8().get_data();                    \
+      |                                                     ^~~~~~~~~~~~~~~
+src/virtual_sensors/camera/basic_camera.cpp: In member function 'godot::String godot::CSensorBasicCamera::get_ros1_topic_name()':
+src/ros_interface/ros1/ros1_pub.hpp:53:60: error: 'struct godot::CBaseSensorConfig<sensor_msgs::Image_<std::allocator<void> > >' has no member named 'ros1_pub_config'
+   53 |         return MEMBER_NAME.get_config().base_sensor_config.ros1_pub_config.topic_name.c_str();                                      \
+      |                                                            ^~~~~~~~~~~~~~~
+src/ros_interface/ros1/ros1_pub.hpp:53:60: note: in definition of macro 'GDROS1PUB_DEF_METHODS'
+   53 |         return MEMBER_NAME.get_config().base_sensor_config.ros1_pub_config.topic_name.c_str();                                      \
+      |                                                            ^~~~~~~~~~~~~~~
+src/virtual_sensors/camera/basic_camera.cpp: In member function 'void godot::CSensorBasicCamera::set_ros1_queue_size(int)':
+src/ros_interface/ros1/ros1_pub.hpp:57:53: error: 'struct godot::CBaseSensorConfig<sensor_msgs::Image_<std::allocator<void> > >' has no member named 'ros1_pub_config'
+   57 |         MEMBER_NAME.get_config().base_sensor_config.ros1_pub_config.queue_size = f_queue_size;                                      \
+      |                                                     ^~~~~~~~~~~~~~~
+src/ros_interface/ros1/ros1_pub.hpp:57:53: note: in definition of macro 'GDROS1PUB_DEF_METHODS'
+   57 |         MEMBER_NAME.get_config().base_sensor_config.ros1_pub_config.queue_size = f_queue_size;                                      \
+      |                                                     ^~~~~~~~~~~~~~~
+src/virtual_sensors/camera/basic_camera.cpp: In member function 'int godot::CSensorBasicCamera::get_ros1_queue_size()':
+src/ros_interface/ros1/ros1_pub.hpp:61:60: error: 'struct godot::CBaseSensorConfig<sensor_msgs::Image_<std::allocator<void> > >' has no member named 'ros1_pub_config'
+   61 |         return MEMBER_NAME.get_config().base_sensor_config.ros1_pub_config.queue_size;                                              \
+      |                                                            ^~~~~~~~~~~~~~~
+src/ros_interface/ros1/ros1_pub.hpp:61:60: note: in definition of macro 'GDROS1PUB_DEF_METHODS'
+   61 |         return MEMBER_NAME.get_config().base_sensor_config.ros1_pub_config.queue_size;                                              \
+      |                                                            ^~~~~~~~~~~~~~~
+src/virtual_sensors/camera/basic_camera.cpp: In member function 'void godot::CSensorBasicCamera::set_ros1_pub_rate(float)':
+src/ros_interface/ros1/ros1_pub.hpp:65:53: error: 'struct godot::CBaseSensorConfig<sensor_msgs::Image_<std::allocator<void> > >' has no member named 'ros1_pub_config'
+   65 |         MEMBER_NAME.get_config().base_sensor_config.ros1_pub_config.pub_info.pub_rate_hz_f32 = f_pub_rate_hz;                       \
+      |                                                     ^~~~~~~~~~~~~~~
+src/ros_interface/ros1/ros1_pub.hpp:65:53: note: in definition of macro 'GDROS1PUB_DEF_METHODS'
+   65 |         MEMBER_NAME.get_config().base_sensor_config.ros1_pub_config.pub_info.pub_rate_hz_f32 = f_pub_rate_hz;                       \
+      |                                                     ^~~~~~~~~~~~~~~
+src/virtual_sensors/camera/basic_camera.cpp: In member function 'float godot::CSensorBasicCamera::get_ros1_pub_rate()':
+src/ros_interface/ros1/ros1_pub.hpp:69:60: error: 'struct godot::CBaseSensorConfig<sensor_msgs::Image_<std::allocator<void> > >' has no member named 'ros1_pub_config'
+   69 |         return MEMBER_NAME.get_config().base_sensor_config.ros1_pub_config.pub_info.pub_rate_hz_f32;                                \
+      |                                                            ^~~~~~~~~~~~~~~
+src/ros_interface/ros1/ros1_pub.hpp:69:60: note: in definition of macro 'GDROS1PUB_DEF_METHODS'
+   69 |         return MEMBER_NAME.get_config().base_sensor_config.ros1_pub_config.pub_info.pub_rate_hz_f32;                                \
+      |                                                            ^~~~~~~~~~~~~~~
+src/virtual_sensors/camera/basic_camera.cpp: In member function 'void godot::CSensorBasicCamera::set_ros1_pub_type_rate(int)':
+src/ros_interface/ros1/ros1_pub.hpp:73:53: error: 'struct godot::CBaseSensorConfig<sensor_msgs::Image_<std::allocator<void> > >' has no member named 'ros1_pub_config'
+   73 |         MEMBER_NAME.get_config().base_sensor_config.ros1_pub_config.pub_info.pub_type = static_cast<::godot::EPublishType>(f_type); \
+      |                                                     ^~~~~~~~~~~~~~~
+src/ros_interface/ros1/ros1_pub.hpp:73:53: note: in definition of macro 'GDROS1PUB_DEF_METHODS'
+   73 |         MEMBER_NAME.get_config().base_sensor_config.ros1_pub_config.pub_info.pub_type = static_cast<::godot::EPublishType>(f_type); \
+      |                                                     ^~~~~~~~~~~~~~~
+src/ros_interface/ros1/ros1_pub.hpp:73:110: error: 'EPublishType' in namespace 'godot' does not name a type
+   73 |         MEMBER_NAME.get_config().base_sensor_config.ros1_pub_config.pub_info.pub_type = static_cast<::godot::EPublishType>(f_type); \
+      |                                                                                                              ^~~~~~~~~~~~
+src/ros_interface/ros1/ros1_pub.hpp:73:110: note: in definition of macro 'GDROS1PUB_DEF_METHODS'
+   73 |         MEMBER_NAME.get_config().base_sensor_config.ros1_pub_config.pub_info.pub_type = static_cast<::godot::EPublishType>(f_type); \
+      |                                                                                                              ^~~~~~~~~~~~
+In file included from src/virtual_sensors/camera/basic_camera.hpp:12,
+                 from src/virtual_sensors/camera/basic_camera.cpp:2:
+src/virtual_sensors/camera/basic_camera.cpp: In member function 'int godot::CSensorBasicCamera::get_ros1_pub_type_rate()':
+src/ros_interface/ros1/ros1_pub.hpp:77:77: error: 'struct godot::CBaseSensorConfig<sensor_msgs::Image_<std::allocator<void> > >' has no member named 'ros1_pub_config'
+   77 |         return static_cast<int>(MEMBER_NAME.get_config().base_sensor_config.ros1_pub_config.pub_info.pub_type);                     \
+      |                                                                             ^~~~~~~~~~~~~~~
+src/ros_interface/ros1/ros1_pub.hpp:77:77: note: in definition of macro 'GDROS1PUB_DEF_METHODS'
+   77 |         return static_cast<int>(MEMBER_NAME.get_config().base_sensor_config.ros1_pub_config.pub_info.pub_type);                     \
+      |                                                                             ^~~~~~~~~~~~~~~
+src/virtual_sensors/camera/basic_camera.cpp: In member function 'virtual void godot::CSensorBasicCamera::_ready()':
+src/virtual_sensors/camera/basic_camera.cpp:94:40: error: 'struct godot::CBaseSensorConfig<sensor_msgs::Image_<std::allocator<void> > >' has no member named 'ros1_pub_config'
+   94 |     m_camera_config.base_sensor_config.ros1_pub_config.enabled = true;
+      |                                        ^~~~~~~~~~~~~~~
+src/virtual_sensors/camera/basic_camera.cpp:95:40: error: 'struct godot::CBaseSensorConfig<sensor_msgs::Image_<std::allocator<void> > >' has no member named 'ros1_pub_config'
+   95 |     m_camera_config.base_sensor_config.ros1_pub_config.pub_info.pub_type = EPublishType::PUBLISH_TYPE_RATE;
+      |                                        ^~~~~~~~~~~~~~~
+src/virtual_sensors/camera/basic_camera.cpp:95:76: error: 'EPublishType' has not been declared
+   95 |     m_camera_config.base_sensor_config.ros1_pub_config.pub_info.pub_type = EPublishType::PUBLISH_TYPE_RATE;
+      |                                                                            ^~~~~~~~~~~~
+src/virtual_sensors/camera/basic_camera.cpp: In member function 'void godot::CSensorBasicCamera::_process(float)':
+src/virtual_sensors/camera/basic_camera.cpp:197:129: error: 'struct godot::CBaseSensorConfig<sensor_msgs::Image_<std::allocator<void> > >' has no member named 'ros1_pub_config'
+  197 |             std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int64_t>(1.f / m_camera_config.base_sensor_config.ros1_pub_config.pub_info.pub_rate_hz_f32 * 1000.f * 0.5f)));
+      |                                                                                                                                 ^~~~~~~~~~~~~~~
+In file included from src/virtual_sensors/camera/basic_camera.hpp:16,
+                 from src/virtual_sensors/camera/basic_camera.cpp:2:
+src/virtual_sensors/base_sensor.hpp: In instantiation of 'void godot::CBaseSensor<t_ros_msg>::ros1_pub_thread() [with t_ros_msg = sensor_msgs::Image_<std::allocator<void> >]':
+src/virtual_sensors/base_sensor.hpp:137:45:   required from 'void godot::CBaseSensor<t_ros_msg>::init() [with t_ros_msg = sensor_msgs::Image_<std::allocator<void> >]'
+src/virtual_sensors/camera/basic_camera.cpp:38:48:   required from here
+src/virtual_sensors/base_sensor.hpp:184:61: error: 'struct godot::CBaseSensorConfig<sensor_msgs::Image_<std::allocator<void> > >' has no member named 'ros1_pub_config'
+  184 |                 auto ros_node_name = "ros_node_" + m_config.ros1_pub_config.node_name + gen_string_shm();
+      |                                                    ~~~~~~~~~^~~~~~~~~~~~~~~
+src/virtual_sensors/base_sensor.hpp:186:116: error: 'struct godot::CBaseSensorConfig<sensor_msgs::Image_<std::allocator<void> > >' has no member named 'ros1_pub_config'
+  186 |                 boost::process::child ros_node_subprocess(boost::process::search_path("./ros1_pub_node"), m_config.ros1_pub_config.topic_type, shm_data_name, shm_config_name, shm_mutex_name, ros_node_name);
+      |                                                                                                           ~~~~~~~~~^~~~~~~~~~~~~~~
+scons: *** [src/godot_register_types/godot_ros_register_types.os] Error 1
+scons: *** [src/virtual_sensors/camera/basic_camera.os] Error 1
+scons: building terminated because of errors.

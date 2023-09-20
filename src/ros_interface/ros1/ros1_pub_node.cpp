@@ -1,8 +1,5 @@
 #include "ros1_pub.hpp"
-#include <boost/process.hpp>
-#include <boost/interprocess/managed_shared_memory.hpp>
-#include <boost/interprocess/sync/named_mutex.hpp>
-#include <boost/interprocess/sync/scoped_lock.hpp>
+
 #include <iostream>
 #include <cstdlib>
 #include <sstream>
@@ -14,25 +11,86 @@
 #include <memory>
 #include <exception>
 
-using namespace boost::process;
+#include <grpc/grpc.h>
+#include <grpcpp/client_context.h>
+// #include <grpcpp/channel.h>
+#include <grpcpp/create_channel.h>
+// #include "grpc_interface/gen_protoc/godot_grpc.pb.h"
+// #include "grpc_interface/gen_protoc/ros1.pb.h"
+#include "grpc_interface/gen_protoc/simple_camera_service.grpc.pb.h"
+#include "grpc_interface/gen_protoc/simple_camera_service.pb.h"
+#include "grpc_interface/gen_protoc/ros1.pb.h"
+#include "grpc_interface/gen_protoc/commonMessages.pb.h"
+
 using namespace std;
 using namespace godot;
 
+using namespace grpc;
+using grpc::Channel;
+using grpc::ClientContext;
+using grpc::ClientReader;
+using grpc::ClientReaderWriter;
+using grpc::ClientWriter;
+using grpc::Status;
+
 string g_ros_msg_image = "sensor_msgs/Image";
 
-boost::interprocess::named_mutex *g_segment_data_mutex = nullptr;
+namespace gcamera = ::godot_grpc::simple_camera_service;
 
-boost::interprocess::managed_shared_memory *g_segment_data = nullptr;
+std::unique_ptr<gcamera::SimpleCameraService::Stub> g_rpc_stub;
 
-std::string g_shm_data_name = "";
+uint64_t g_seq = 0;
 
-std::map<std::string, uint64_t> g_mesage_size_map = {{g_ros_msg_image, sizeof(::sensor_msgs::Image)}};
-
-// Help method on how to use appliacation
+// Help method on how to use application
 void help()
 {
-    std::cout << "Usage: ros1_pub <ros1_msg_type> <shm_name> <config_shm_name> <mutex_name>" << std::endl;
-    std::cout << "Example: ros1_pub sensor_msgs/Image image_data image_config image_mutex" << std::endl;
+    std::cout << "Usage: ros1_pub_node <grpc_server_address> <grpc_server_port>" << std::endl;
+}
+
+// Function to parse grpc message image to ros1 message image
+void parse_grpc_msg_to_ros1_msg(const gcamera::imageMsg &grpc_msg, sensor_msgs::Image &ros1_msg)
+{
+    // Set ros1 message sequence checkingfor overflow
+    ros1_msg.header.seq = g_seq;
+
+    if (g_seq == UINT64_MAX)
+    {
+        g_seq = 0;
+    }
+    else
+    {
+        g_seq++;
+    }
+
+    // Set ros1 message stamp with ros time
+    ros1_msg.header.stamp = ros::Time::now();
+
+    ros1_msg.header.frame_id = grpc_msg.frame_id();
+
+    // Set ros1 message height
+    ros1_msg.height = grpc_msg.height();
+
+    // Set ros1 message width
+    ros1_msg.width = grpc_msg.width();
+
+    // Set ros1 message encoding
+    ros1_msg.encoding = grpc_msg.encoding();
+
+    // Set ros1 message is_bigendian
+    ros1_msg.is_bigendian = grpc_msg.is_bigendian();
+
+    // Set ros1 message step
+    ros1_msg.step = grpc_msg.step();
+
+    // Set ros1 message data
+    auto &l_data = grpc_msg.uint8_data();
+
+    ros1_msg.data.reserve(l_data.size());
+
+    for (auto &i_byte_data : l_data)
+    {
+        ros1_msg.data.push_back(static_cast<uint8_t>(i_byte_data));
+    }
 }
 
 // Callback function to generate ros1 message from shared memory passed data
@@ -42,23 +100,46 @@ t_message gen_ros1_msg_from_shm_data()
     // Create ros1 message object
     t_message ros1_msg;
 
-    // lock mutex using lock_guard
-    boost::interprocess::scoped_lock<boost::interprocess::named_mutex> lock(*g_segment_data_mutex);
+    ClientContext l_context;
 
-    auto shm_data = g_segment_data->find<t_message>(g_shm_data_name.c_str()).first;
+    gcamera::imageRequestMsg l_request;
+    gcamera::imageMsg l_reply;
 
-    // Check if data is valid
-    if (shm_data == nullptr)
+    // Get new image from gRPC server
+    auto l_status = g_rpc_stub->getImage(&l_context, l_request, &l_reply);
+
+    if (l_status.ok())
     {
-        std::cout << "Error: ros1 message data not found" << std::endl;
-
-        throw std::runtime_error("Error: ros1 message data not found");
+        // Parse gRPC message to ros1 message
+        parse_grpc_msg_to_ros1_msg(l_reply, ros1_msg);
+    }
+    else
+    {
+        cout << "Status return for get image from gRPC server is not ok" << endl;
     }
 
-    // Copy data from shared memory to ros1 message
-    ros1_msg = *shm_data;
-
     return std::move(ros1_msg);
+}
+
+// Function to send status message to gRPC server
+int send_status_to_grpc_server(int i_status)
+{
+    int l_ret = 0;
+    ClientContext l_context;
+    ::godot_grpc::uint32Msg l_request;
+    ::godot_grpc::emptyMsg l_reply;
+
+    l_request.set_value(i_status);
+
+    auto l_status = g_rpc_stub->setClientStatus(&l_context, l_request, &l_reply);
+
+    if (!l_status.ok())
+    {
+        cout << "Could not send status " << endl;
+        l_ret = 1;
+    }
+
+    return l_ret;
 }
 
 /**
@@ -67,12 +148,8 @@ t_message gen_ros1_msg_from_shm_data()
  * The application is intented to work with interprocess shared memory communication
  * to share the next para meters listed by the order of the arguments:
  *
- *  - ros1_msg_type: Type of ros1 message to publish
- *  - shm_name: Name of the shared memory segment that will contain the ros1 message
- *  - topic_type : String representing the type of the topic to publish
- *  - config_shm_name: Name of the shared memory segment that will contain the config data
- *  - mutex_name: Name of the mutex to lock the shared memory segment
- *  - ros_node_name: Name of the ros node
+ *  - grpc_server_address: Address of the grpc server
+ *  - grpc_server_port: Port of the grpc server
  *
  *
  * Return values :
@@ -85,6 +162,8 @@ t_message gen_ros1_msg_from_shm_data()
 int main(int argc, char **argv)
 {
 
+    int l_ret = 0;
+
     // Check passed arguments are correct and print help when needed
     if (argc != 5)
     {
@@ -92,100 +171,58 @@ int main(int argc, char **argv)
         return 1;
     }
 
-    std::string ros1_msg_type = argv[1];
+    // Create gRPC client from passed arguments
+    std::string grpc_server_address = argv[1];
+    std::string grpc_server_port = argv[2];
+    auto l_grpc_client = grpc::CreateChannel(grpc_server_address + ":" + grpc_server_port, grpc::InsecureChannelCredentials());
 
-    // Get shared memory segment name as second arg
-    g_shm_data_name = argv[2];
+    g_rpc_stub = ::godot_grpc::simple_camera_service::SimpleCameraService::NewStub(l_grpc_client);
 
-    // Get shared memory name for the config data
-    std::string config_shm_name = argv[3];
+    // Get ROS config from server
+    ClientContext l_context;
+    ::godot_grpc::ros1::ROS1PublisherConfig l_ros_config;
+    ::godot_grpc::emptyMsg l_req;
+    auto l_status = g_rpc_stub->getROSConfig(&l_context, l_req, &l_ros_config);
 
-    // Get shared memory mutex name
-    std::string mutex_name = argv[4];
-
-    // Get ros node name
-    std::string ros_node_name = argv[5];
-
-    // Initialize ROS
-    if (!ros::isInitialized())
+    if (l_status.ok())
     {
-        int l_argc = 0;
-        char **l_argv = NULL;
-        ros::init(l_argc, l_argv, ros_node_name.c_str());
-    }
 
-    // Create mutex object
-    boost::interprocess::named_mutex mutex(boost::interprocess::open_or_create, mutex_name.c_str());
-
-    g_segment_data_mutex = &mutex;
-
-    // uint64_t shm_size = g_mesage_size_map[ros1_msg_type];
-
-    // Remove shared memory on construction and destruction
-    // struct shm_remove
-    // {
-    //     shm_remove() { shared_memory_object::remove(shm_name); }
-    //     ~shm_remove() { shared_memory_object::remove(shm_name); }
-    // } remover;
-
-    // Create shared memory segment for topic data
-    boost::interprocess::managed_shared_memory segment(boost::interprocess::open_or_create, g_shm_data_name.c_str(), 65535);
-
-    g_segment_data = &segment;
-
-    // Create shared memory segment for config data
-    boost::interprocess::managed_shared_memory config_segment(boost::interprocess::open_or_create, config_shm_name.c_str(), 65535);
-
-    // Allocate mmemory in shared memory segment for the size of the type of ros1 message
-    // void *ros1_data = segment.allocate(sizeof(ros1_msg_type));
-
-    // Create storage for ROS1 publisher object as a variant
-    shared_ptr<CRos1PublisherInterface> m_ros_if;
-
-    // Create ros1 publisher object depending on the type of ros1 message
-    if (ros1_msg_type == g_ros_msg_image)
-    {
-        std::shared_ptr<CRos1Publisher<::sensor_msgs::Image>> ros1_pub = make_shared<CRos1Publisher<::sensor_msgs::Image>>();
-
+        // Initialize ROS
+        if (!ros::isInitialized())
         {
-            // lock mutex using lock_guard
-            boost::interprocess::scoped_lock<boost::interprocess::named_mutex> lock(mutex);
+            int l_argc = 0;
+            char **l_argv = NULL;
 
-            // Get ros1 publisher config data depending of the type of ros1 message
-            if (ros1_msg_type == g_ros_msg_image)
-            {
-                // Get ros1 publisher config data from shared memory
-                CRosPublisherConfig<::sensor_msgs::Image> *ros1_pub_config = config_segment.find<CRosPublisherConfig<::sensor_msgs::Image>>(config_shm_name.c_str()).first;
+            ros::init(l_argc, l_argv, l_ros_config.node_name());
+        }
 
-                // Check if config data is valid
-                if (ros1_pub_config == nullptr)
-                {
-                    std::cout << "Error: ros1 publisher config data not found" << std::endl;
-                    return 1;
-                }
+        // Create storage for ROS1 publisher object as a variant
+        shared_ptr<CRos1PublisherInterface> m_ros_if;
 
-                // Set callback functino in ros1 publisher config data
-                try
-                {
-                    ros1_pub_config->pub_info.f_get_message = gen_ros1_msg_from_shm_data<::sensor_msgs::Image>;
-                }
-                catch (const std::exception &e)
-                {
-                    std::cerr << e.what() << '\n';
-                    return 1;
-                }
+        // Create ros1 publisher object depending on the type of ros1 message
+        if (l_ros_config.topic_type() == g_ros_msg_image)
+        {
+            std::shared_ptr<CRos1Publisher<::sensor_msgs::Image>> ros1_pub = make_shared<CRos1Publisher<::sensor_msgs::Image>>();
 
-                // Set ros1 publisher config data
-                ros1_pub->set_config(*ros1_pub_config);
+            // Create ROS1 publisher config data
+            auto ros1_pub_config = make_shared<::godot::CRos1PublisherConfig<::sensor_msgs::Image>>();
 
-                m_ros_if = std::static_pointer_cast<CRos1PublisherInterface>(ros1_pub);
-            }
-            else
-            {
-                throw std::runtime_error("Message type not supported currently");
-            }
+            // Set callback functino in ros1 publisher config data
 
-        } // Destroy lock_guard and unlock mutex
+            ros1_pub_config->f_get_message = gen_ros1_msg_from_shm_data<::sensor_msgs::Image>;
+            ros1_pub_config->proto_config = std::move(l_ros_config);
+
+            // Set ros1 publisher config data
+            ros1_pub->set_config(*ros1_pub_config);
+
+            m_ros_if = std::static_pointer_cast<CRos1PublisherInterface>(ros1_pub);
+        }
+        else
+        {
+            std::cout << "Error: ros1 message type not supported" << std::endl;
+            send_status_to_grpc_server(1);
+            l_ret = 1;
+        }
 
         // Initialize ros1 publisher
         m_ros_if->init();
@@ -197,14 +234,15 @@ int main(int argc, char **argv)
         if (m_ros_if->ros_error())
         {
             std::cout << "Error: ros1 publisher error" << std::endl;
-            return 2;
+            send_status_to_grpc_server(2);
+            l_ret = 2;
         }
     }
     else
     {
-        std::cout << "Error: ros1 message type not supported" << std::endl;
+        send_status_to_grpc_server(1);
         return 1;
     }
 
-    return 0;
+    return l_ret;
 }

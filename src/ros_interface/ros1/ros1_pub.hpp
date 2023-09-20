@@ -17,6 +17,10 @@
 #include <shared_mutex>
 #include <mutex>
 
+#include "grpc_interface/gen_protoc/ros1.pb.h"
+
+namespace gros1 = ::godot_grpc::ros1;
+
 /**
  * Macro to allow faster godot bind method creation
  *
@@ -123,44 +127,19 @@
 namespace godot
 {
 
-    enum class EPublishType
-    {
-        PUBLISH_TYPE_RATE = 0,
-        PUBLISH_TYPE_EVENT
-    };
-
     /**
      * Configuration struct for the CRos1Publisher class
      *
      * @tparam t_message_type - ROS1 message type
      */
     template <typename t_message_type>
-    struct CRosPublisherConfig
-    {
-        /** Name of the ROS node*/
-        std::string node_name;
+    struct CRos1PublisherConfig
+    {   
+        /**Protobuf generated class for config */
+        gros1::ROS1PublisherConfig proto_config;
 
-        /**Name of the ROS topic to be published*/
-        std::string topic_name;
-
-        /** ROS topic type string*/
-        std::string topic_type;
-
-        /** ROS queue size for */
-        uint16_t queue_size = 10;
-        bool enabled = false;
-
-        struct
-        {
-            /** User callback function to generate new message*/
-            std::function<t_message_type()> f_get_message;
-
-            /** ROS topic publishing rate */
-            float pub_rate_hz_f32 = 10.0f;
-
-            /** Mode of publishing  */
-            EPublishType pub_type = EPublishType::PUBLISH_TYPE_RATE;
-        } pub_info;
+        /** User callback function to generate new message*/
+        std::function<t_message_type()> f_get_message;
     };
 
     /**
@@ -203,7 +182,7 @@ namespace godot
         // Published message sequence id
         uint32_t m_seq_id_u32 = 0;
 
-        CRosPublisherConfig<t_message_type> m_config;
+        CRos1PublisherConfig<t_message_type> m_config;
 
         /**
          * Internal method to publish a message
@@ -236,7 +215,7 @@ namespace godot
                 // Mark publish loop to exit in case
                 set_exit_publish_loop(true);
 
-                //Wait for thread to finish
+                // Wait for thread to finish
                 m_loop_pub_thread.join();
             }
         };
@@ -268,12 +247,12 @@ namespace godot
             return m_seq_id_u32;
         }
 
-        void set_config(CRosPublisherConfig<t_message_type> const &f_config)
+        void set_config(CRos1PublisherConfig<t_message_type> const &f_config)
         {
             m_config = f_config;
         };
 
-        CRosPublisherConfig<t_message_type> &get_config()
+        CRos1PublisherConfig<t_message_type> &get_config()
         {
             return m_config;
         };
@@ -281,20 +260,20 @@ namespace godot
         void init() override
         {
 
-            if (m_config.enabled == true)
+            if (m_config.proto_config.enabled() == true)
             {
 
                 // Initialize the ROS node handle
                 m_node_handle = ros::NodeHandle();
 
                 // Create a publisher object
-                m_publisher = m_node_handle.advertise<t_message_type>(m_config.topic_name, 10);
+                m_publisher = m_node_handle.advertise<t_message_type>(m_config.proto_config.topic_name(), 10);
 
-                if (m_config.pub_info.pub_type == EPublishType::PUBLISH_TYPE_RATE)
+                if (m_config.proto_config.pub_type() == gros1::PUBLISH_TYPE_RATE)
                 {
 
                     // Set the publishing rate
-                    m_rate = ros::Rate(m_config.pub_info.pub_rate_hz_f32);
+                    m_rate = ros::Rate(m_config.proto_config.pub_rate_hz_f32());
 
                     // Crete publishing thread
                     m_loop_pub_thread = std::thread(&CRos1Publisher<t_message_type>::publish_loop, this);
@@ -308,13 +287,13 @@ namespace godot
 
         bool get_exit_publish_loop()
         {
-            std::shared_lock<std::shared_mutex> l_lock (m_loop_mtx);
+            std::shared_lock<std::shared_mutex> l_lock(m_loop_mtx);
             return m_exit_pub_loop;
         };
 
         void set_exit_publish_loop(bool f_value)
         {
-            std::unique_lock<std::shared_mutex> l_lock (m_loop_mtx);
+            std::unique_lock<std::shared_mutex> l_lock(m_loop_mtx);
             m_exit_pub_loop = f_value;
         };
 
@@ -327,7 +306,7 @@ namespace godot
         void publish_loop() override
         {
 
-            if (m_config.pub_info.pub_type == EPublishType::PUBLISH_TYPE_RATE)
+            if (m_config.proto_config.pub_type() == gros1::PUBLISH_TYPE_RATE)
             {
 
                 while (!get_exit_publish_loop() && !m_ros_error)
@@ -335,7 +314,7 @@ namespace godot
 
                     if (ros::ok())
                     {
-                        auto l_message = m_config.pub_info.f_get_message();
+                        auto l_message = m_config.proto_config.f_get_message();
 
                         pub_message(l_message);
                     }
@@ -361,7 +340,7 @@ namespace godot
         void publish_once(t_message_type &f_message)
         {
 
-            if (m_config.pub_info.pub_type == EPublishType::PUBLISH_TYPE_EVENT)
+            if (m_config.proto_config.pub_type() == gros1::PUBLISH_TYPE_EVENT)
             {
                 pub_message(f_message);
             }

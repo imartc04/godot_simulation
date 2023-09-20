@@ -1,0 +1,15 @@
+syntax = "proto3";
+package godot_grpc;
+
+
+message emptyMsg {
+}
+
+message stringMsg{
+    string value = 1;
+  }
+
+  message uint32Msg
+  {
+    uint32 value = 1;
+  }

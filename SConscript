@@ -60,7 +60,7 @@ Remember that the path of this file will be inisde of build, check the original_
 if build variant dir is used with Scons. Scons will copy this
 file to build
 """
-l_repo_base_path = "./../"
+l_repo_base_path =  "./../"
 print("l_repo_base_path: ", l_repo_base_path)
 
 
@@ -206,6 +206,11 @@ l_gdextension_src_files = [item for item in l_all_src_files if not re.search(pat
 #Print all files
 # for file in l_all_src_files:
 #     print("src file :" , file)
+
+#Add gRPC dependencies
+env.Append(CPPPATH=["deps/grpc_installed/include"])
+env.Append(LIBPATH=["deps/grpc_installed/lib"])
+
 
 
 

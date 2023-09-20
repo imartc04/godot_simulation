@@ -5,6 +5,8 @@
 #include <boost/interprocess/sync/named_mutex.hpp>
 #include <boost/process.hpp>
 #include <random>
+#include "grpc_interface/gen_protoc/simple_camera_service.grpc.pb.h"
+// #include "grpc_interface/gen_protoc/simple_camera_service.h"
 
 namespace godot
 {
@@ -48,8 +50,21 @@ namespace godot
 
         } pose;
 
+        // gRPC config
+        struct
+        {
+            std::string server_address;
+            std::string server_port;
+
+        } grpc_config;
+
+        /**
+         * Callaback to generate new data
+         */
+        std::function<t_ros_msg()> new_data_callback;
+
         // Ros pub config
-        CRosPublisherConfig<t_ros_msg> ros1_pub_config;
+        CRos1PublisherConfig<t_ros_msg> ros1_pub_config;
     };
 
     template <typename t_ros_msg>
@@ -107,31 +122,21 @@ namespace godot
         void init()
         {
 
-            // Create named shared data string
-            auto shm_data_name = gen_string_shm();
+            //Create gRPC server builder
+            ServerBuilder builder;
+            builder.AddListeningPort(server_address, grpc::InsecureServerCredentials());
 
-            // Create named config for shared data string
-            auto shm_config_name = gen_string_shm();
-
-            // Create named mutex name string
-            auto shm_mutex_name = "mutex_" + gen_string_shm();
-
-            // Create mutex
-            mutex = std::make_unique<boost::interprocess::named_mutex>(boost::interprocess::open_or_create, shm_mutex_name.c_str());
-
-            auto auxmem = boost::interprocess::managed_shared_memory(boost::interprocess::open_or_create, shm_data_name.c_str(), sizeof(t_ros_msg), nullptr, boost::interprocess::read_write);
-
-            // Crate shared memory segment
-            m_segment = std::make_unique<boost::interprocess::managed_shared_memory>(boost::interprocess::open_or_create, shm_data_name.c_str(), sizeof(t_ros_msg));
-
-            // Construct data shared memory object
-            m_data_obj_shm = m_segment->construct<t_ros_msg>(shm_data_name.c_str())();
-
-            // Create shared memory object for config
-            m_config_segment = std::make_unique<boost::interprocess::managed_shared_memory>(boost::interprocess::open_or_create, shm_config_name.c_str(), sizeof(CBaseSensorConfig<t_ros_msg>));
-
-            // Set the value of the shared memory config object to the config object
-            m_config_obj_shm = m_config_segment->construct<CBaseSensorConfig<t_ros_msg>>(shm_config_name.c_str())(m_config);
+            // Create grpc server from config
+            if (m_config.ros1_pub_config.proto_config.get_topic_type() == "sensor_msgs/Image")
+            {
+                auto grpc_server = std::make_shared<CSimpleCameraServiceServerImpl>(m_config.grpc_config.server_address, m_config.grpc_config.server_port);
+                grpc_server->start();
+            }
+            else
+            {
+                std::cout << "Error: ros1 message type not supported" << std::endl;
+                return;
+            }
 
             // Create thread to manage ROS 1 publisher process
             m_ros1_pub_thread = std::thread(&CBaseSensor<t_ros_msg>::ros1_pub_thread, this);
@@ -147,21 +152,6 @@ namespace godot
 
     private:
         /**** VARIABLES ****/
-        /**
-         * ROS 1 publisher mutex object
-         * to manage access to shared memory
-         */
-        std::unique_ptr<boost::interprocess::named_mutex> mutex;
-
-        /**
-         * ROS 1 publisher shared memory for data
-         */
-        std::unique_ptr<boost::interprocess::managed_shared_memory> m_segment;
-
-        /**
-         * Shared memory object for config data
-         */
-        std::unique_ptr<boost::interprocess::managed_shared_memory> m_config_segment;
 
         /**
          * Thread to create and manage ROS 1 publisher process
