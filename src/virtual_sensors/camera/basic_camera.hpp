@@ -9,8 +9,7 @@
 #include <godot_cpp/variant/variant.hpp>
 #include <string>
 #include <memory>
-#include "ros_interface/ros1/ros1_pub.hpp"
-#include <sensor_msgs/Image.h>
+#include "ros_interface/ros1/ros1_pub_helper_macros.hpp"
 #include "godot_cpp/classes/image.hpp"
 #include <map>
 #include "virtual_sensors/base_sensor.hpp"
@@ -18,6 +17,8 @@
 #include <mutex>
 #include <condition_variable>
 #include <cstdint>
+
+#include "sensor_msgs/Image.h"
 
 namespace godot
 {
@@ -37,7 +38,7 @@ namespace godot
     struct CSensorBasicCameraConfig
     // Camera parameters
     {
-        CBaseSensorConfig<::sensor_msgs::Image> base_sensor_config;
+        CBaseSensorConfig<::godot::Image> base_sensor_config;
 
         // Camera name
         std::string cam_name;
@@ -219,9 +220,13 @@ namespace godot
      *
      */
     class CSensorBasicCamera : public Camera3D,
-                               public CBaseSensor<::sensor_msgs::Image>
+                               public CBaseSensor<::godot::Image>
     {
+
         GDCLASS(CSensorBasicCamera, Camera3D)
+
+    public:
+    typedef CBaseSensor<::godot::Image> t_baseSensor;
 
     protected:
         /**

@@ -1,18 +1,26 @@
 #pragma once
 
-#include "ros_interface/ros1/ros1_pub.hpp"
-#include <boost/interprocess/managed_shared_memory.hpp>
-#include <boost/interprocess/sync/named_mutex.hpp>
+// #include "ros_interface/ros1/ros1_pub.hpp"
 #include <boost/process.hpp>
 #include <random>
 #include "grpc_interface/gen_protoc/simple_camera_service.grpc.pb.h"
+#include "grpc_interface/simple_camera_server_impl.hpp"
+#include <grpcpp/client_context.h>
+
+
+// #include <grpc/grpc.h>
+// #include <grpcpp/server.h>
+#include <grpcpp/server_builder.h>
+
+#include <memory>
+
 // #include "grpc_interface/gen_protoc/simple_camera_service.h"
 
 namespace godot
 {
 
     // Configuration struct
-    template <typename t_ros_msg>
+    template <typename t_godot_data_generated>
     struct CBaseSensorConfig
     {
 
@@ -61,56 +69,53 @@ namespace godot
         /**
          * Callaback to generate new data
          */
-        std::function<t_ros_msg()> new_data_callback;
+        std::function<t_godot_data_generated()> new_data_callback;
 
         // Ros pub config
-        CRos1PublisherConfig<t_ros_msg> ros1_pub_config;
+        godot_grpc::ros1::ROS1PublisherConfig ros1_pub_config;
     };
 
-    template <typename t_ros_msg>
+    template <typename t_godot_data_generated>
     class CBaseSensor
     {
-
     public:
-        CBaseSensor()
-        {
+        typedef CBaseSensorConfig<t_godot_data_generated> t_config;
+        typedef CBaseSensor<t_godot_data_generated> t_baseSensor;
 
-            // Check if ROS is intialized and initialize it if not
-            if (!ros::isInitialized())
-            {
-                int argc = 0;
-                char **argv = NULL;
-                ros::init(argc, argv, "godot_ros_sensor"); //, ros::init_options::NoSigintHandler
-                static ros::NodeHandle nh;
-                // ros::start();
-            }
-        };
+        CBaseSensor(){};
         ~CBaseSensor(){};
 
-        void set_config(CBaseSensorConfig<t_ros_msg> const &f_config)
+        void set_config(t_config const &f_config)
         {
 
             // Set config
             m_config = f_config;
         }
 
-        CBaseSensorConfig<t_ros_msg> &get_config()
+        t_config &get_config()
         {
             return m_config;
         }
 
-        /**
-         * Method to write data to shared memory
-         * for the ROS 1 node to publish it
-         */
-        void write_data_to_shm(t_ros_msg const &f_data)
+        // Method to manage ROS1 publisher process
+        void manage_ros1_pub_process(uint16_t f_status)
         {
+            if (f_status == 1)
+            {
+                throw std::runtime_error("Error: ROS1 publisher process was unable to init due some configuration problem");
+            }
+            else if (f_status == 2)
+            {
+                // kill process
+                m_ros1_pub_process->terminate();
 
-            // lock mutex using lock_guard
-            boost::interprocess::scoped_lock<boost::interprocess::named_mutex> lock(*mutex);
-
-            // Write data into shared memory
-            *m_data_obj_shm = f_data;
+                // Create new process
+                m_ros1_pub_process = std::make_unique<boost::process::child>(boost::process::search_path("ros1_pub_node"), boost::process::std_out > stdout, boost::process::std_err > stderr);
+            }
+            else
+            {
+                // Nothing to do
+            }
         }
 
         /**
@@ -122,15 +127,30 @@ namespace godot
         void init()
         {
 
-            //Create gRPC server builder
-            ServerBuilder builder;
-            builder.AddListeningPort(server_address, grpc::InsecureServerCredentials());
+            // Create gRPC server builder
+            ::grpc::ServerBuilder builder;
+            builder.AddListeningPort(m_config.grpc_config.server_address+":"+m_config.grpc_config.server_port, grpc::InsecureServerCredentials());
 
             // Create grpc server from config
-            if (m_config.ros1_pub_config.proto_config.get_topic_type() == "sensor_msgs/Image")
+            if (m_config.ros1_pub_config.topic_type() == "sensor_msgs/Image")
             {
-                auto grpc_server = std::make_shared<CSimpleCameraServiceServerImpl>(m_config.grpc_config.server_address, m_config.grpc_config.server_port);
-                grpc_server->start();
+                auto l_service = std::make_shared<SimpleCameraServerImpl>();
+
+                builder.RegisterService(l_service.get());
+
+                // Set callback function to generate new image
+                l_service->set_data_callback(m_config.new_data_callback);
+
+                // Set ROS1 publisher config
+                l_service->set_ros1_config(m_config.ros1_pub_config);
+
+                // Set callback function to manage client status
+                l_service->set_client_status_callback(std::bind(&t_baseSensor::manage_ros1_pub_process, this, std::placeholders::_1));
+
+                m_grpc_server = builder.BuildAndStart();
+
+                // Create child process
+                m_ros1_pub_process = std::make_unique<boost::process::child>(boost::process::search_path("ros1_pub_node"), boost::process::std_out > stdout, boost::process::std_err > stderr);
             }
             else
             {
@@ -139,16 +159,12 @@ namespace godot
             }
 
             // Create thread to manage ROS 1 publisher process
-            m_ros1_pub_thread = std::thread(&CBaseSensor<t_ros_msg>::ros1_pub_thread, this);
+            m_ros1_pub_thread = std::thread(&t_baseSensor::ros1_pub_thread, this);
         }
 
     protected:
         // ROS1 publisher
-        CBaseSensorConfig<t_ros_msg> m_config;
-
-        CBaseSensorConfig<t_ros_msg> *m_config_obj_shm;
-
-        t_ros_msg *m_data_obj_shm;
+        t_config m_config;
 
     private:
         /**** VARIABLES ****/
@@ -158,34 +174,19 @@ namespace godot
          */
         std::thread m_ros1_pub_thread;
 
+        std::unique_ptr<::grpc::Server> m_grpc_server;
+
+        std::unique_ptr<boost::process::child> m_ros1_pub_process;
+
         /**** METHODS ****/
 
         void ros1_pub_thread()
         {
-            // Create ros node subprocess
-            int l_process_res = 0;
-            do
+            while (true)
             {
-
-                // Generate random strings for shared memory
-                auto shm_data_name = gen_string_shm();
-                auto shm_config_name = "config_" + gen_string_shm();
-                auto shm_mutex_name = "mutex_" + gen_string_shm();
-                auto ros_node_name = "ros_node_" + m_config.ros1_pub_config.node_name + gen_string_shm();
-
-                boost::process::child ros_node_subprocess(boost::process::search_path("./ros1_pub_node"), m_config.ros1_pub_config.topic_type, shm_data_name, shm_config_name, shm_mutex_name, ros_node_name);
-
-                if (!ros_node_subprocess.valid())
-                {
-                    throw std::runtime_error("Error creating ros node subprocess");
-                }
-
-                // Wait for ros node subprocess to finish and get result of execution
-                ros_node_subprocess.wait();
-
-                l_process_res = ros_node_subprocess.exit_code();
-
-            } while (l_process_res == 2);
+                // Server wait for new requests
+                m_grpc_server->Wait();
+            }
         }
 
         /**

@@ -1,4 +1,3 @@
-
 syntax = "proto3";
 package godot_grpc.simple_camera_service;
 

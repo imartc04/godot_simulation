@@ -10,10 +10,18 @@ The sofware divides in the following modules :
 - URDF godot importer to generate robot as a Godot scene
   
   
+[Github repository](https://github.com/imartc04/godot_simulation)
 
-[Github repository](https://docs.godotengine.org/)
+# Requirements
 
-## Topics
+- Scons (tested 4.5.2)
+- Linux (tested Ubuntu 20.04)
+- gcc (tested 9.4.0) 
+- VScode for eaiser development wih debug and custom configured tasks
+- Godot game engine 
+- ROS (version depending of what nodes are used)
+
+# Topics
 
  - [How does Godot connect to ros?](connection_to_ros.md)
  - [Virtual sensors](virtual_sensors.md)
@@ -36,3 +44,5 @@ The sofware divides in the following modules :
 - ROS Noetic topic based joint control
 - ROS 2 topic based joint control
 - Support for compilation in debug and release on scons configuration file
+- LLVM toolchain support (Clang, lld, lldb, libc++)
+- Possible change to Meson build system

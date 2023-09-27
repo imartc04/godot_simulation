@@ -35,7 +35,7 @@ void CSensorBasicCamera::set_ros_init_node_props(bool f_value)
     {
         if (!get_initialized())
         {
-            CBaseSensor<::sensor_msgs::Image>::init();
+            t_baseSensor::init();
             set_initialized(true);
 
             cout << "Camera sensor initialized, the process cannot be undo so if you need to initialize again rerun godot" << endl;
@@ -91,11 +91,11 @@ void CSensorBasicCamera::_ready()
     // Set config callbak
     // m_camera_config.base_sensor_config.ros1_pub_config.pub_info.f_get_message = std::bind(&CSensorBasicCamera::gen_image_callback, this);
 
-    m_camera_config.base_sensor_config.ros1_pub_config.enabled = true;
-    m_camera_config.base_sensor_config.ros1_pub_config.pub_info.pub_type = EPublishType::PUBLISH_TYPE_RATE;
+    m_camera_config.base_sensor_config.ros1_pub_config.set_enabled(true);
+    m_camera_config.base_sensor_config.ros1_pub_config.set_pub_type( ::godot_grpc::ros1::ROS1PublishType::PUBLISH_TYPE_RATE);
 
     // Configure ROS1 publisher
-    CBaseSensor<::sensor_msgs::Image>::set_config(m_camera_config.base_sensor_config);
+    t_baseSensor::set_config(m_camera_config.base_sensor_config);
 
     // Create Viewport object
     auto viewport = memnew(Viewport);
@@ -191,10 +191,7 @@ void CSensorBasicCamera::_process(float delta)
             // Convert image to ROS msg
             convert_image_to_ros_msg(*l_image);
 
-            // Call base sensor write data to shm
-            CBaseSensor<::sensor_msgs::Image>::write_data_to_shm(m_callback_flag.image_buffer);
-
-            std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int64_t>(1.f / m_camera_config.base_sensor_config.ros1_pub_config.pub_info.pub_rate_hz_f32 * 1000.f * 0.5f)));
+            std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int64_t>(1.f / m_camera_config.base_sensor_config.ros1_pub_config.pub_rate_hz_f32() * 1000.f * 0.5f)));
 
         } // Delete lock
     }

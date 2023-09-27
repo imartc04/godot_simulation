@@ -1,4 +1,4 @@
-#include "ros1_pub.hpp"
+#include "ros_interface/ros1/ros1_pub.hpp"
 
 #include <iostream>
 #include <cstdlib>
@@ -13,19 +13,25 @@
 
 #include <grpc/grpc.h>
 #include <grpcpp/client_context.h>
-// #include <grpcpp/channel.h>
+#include <grpcpp/server.h>
 #include <grpcpp/create_channel.h>
-// #include "grpc_interface/gen_protoc/godot_grpc.pb.h"
-// #include "grpc_interface/gen_protoc/ros1.pb.h"
+
+#include <grpcpp/server_context.h>
+#include <grpcpp/security/server_credentials.h>
+
+
+
+#include "grpc_interface/gen_protoc/ros1.pb.h"
 #include "grpc_interface/gen_protoc/simple_camera_service.grpc.pb.h"
 #include "grpc_interface/gen_protoc/simple_camera_service.pb.h"
 #include "grpc_interface/gen_protoc/ros1.pb.h"
 #include "grpc_interface/gen_protoc/commonMessages.pb.h"
 
+
 using namespace std;
+using namespace grpc;
 using namespace godot;
 
-using namespace grpc;
 using grpc::Channel;
 using grpc::ClientContext;
 using grpc::ClientReader;
@@ -37,7 +43,7 @@ string g_ros_msg_image = "sensor_msgs/Image";
 
 namespace gcamera = ::godot_grpc::simple_camera_service;
 
-std::unique_ptr<gcamera::SimpleCameraService::Stub> g_rpc_stub;
+static std::unique_ptr<gcamera::SimpleCameraService::Stub> g_rpc_stub;
 
 uint64_t g_seq = 0;
 
@@ -93,7 +99,7 @@ void parse_grpc_msg_to_ros1_msg(const gcamera::imageMsg &grpc_msg, sensor_msgs::
     }
 }
 
-// Callback function to generate ros1 message from shared memory passed data
+//Callback function to generate ros1 message from shared memory passed data
 template <typename t_message>
 t_message gen_ros1_msg_from_shm_data()
 {
@@ -121,11 +127,11 @@ t_message gen_ros1_msg_from_shm_data()
     return std::move(ros1_msg);
 }
 
-// Function to send status message to gRPC server
+//Function to send status message to gRPC server
 int send_status_to_grpc_server(int i_status)
 {
     int l_ret = 0;
-    ClientContext l_context;
+    ::grpc::ClientContext l_context;
     ::godot_grpc::uint32Msg l_request;
     ::godot_grpc::emptyMsg l_reply;
 

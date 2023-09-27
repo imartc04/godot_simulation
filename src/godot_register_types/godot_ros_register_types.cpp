@@ -1,8 +1,5 @@
 
 #include "godot_ros_register_types.hpp"
-
-
-
 #include <gdextension_interface.h>
 #include <godot_cpp/core/defs.hpp>
 #include <godot_cpp/core/class_db.hpp>
