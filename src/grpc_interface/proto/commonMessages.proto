@@ -3,6 +3,7 @@ package godot_grpc;
 
 
 message emptyMsg {
+  string value = 1;
 }
 
 message stringMsg{

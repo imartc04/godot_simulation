@@ -1,5 +1,7 @@
 import os
 import argparse
+import sys
+
 
 def configure_and_build(config, target, num_cores, build_system, out_file, force_cmake):
 
@@ -39,15 +41,15 @@ def configure_and_build(config, target, num_cores, build_system, out_file, force
     if status != 0:
         #Print error and exit
         print(f"Error configuring CMake with command\n {config_cmake_cmd} \n")
-        exit(status)
+        sys.exit(status)
 
     # Build target
     status = os.system(f"chmod +x {l_conan_path}/conanbuild.sh")
 
     if status != 0:
         #Print error and exit
-        print(f"Error making conanbuild.sh executable with command\n chmod +x build/conanbuild.sh \n")
-        exit(status)
+        sys.stderr.write(f"Error making conanbuild.sh executable with command\n chmod +x build/conanbuild.sh \n")
+        sys.exit(status)
 
     #Print current working directory to check where compile_cmd is executed
     print(f"Current working directory: {os.getcwd()}")
@@ -57,8 +59,13 @@ def configure_and_build(config, target, num_cores, build_system, out_file, force
 
     print(f"Compiling with command\n {compile_cmd} \n" )
 
-    os.system(compile_cmd)
+    status = os.system(compile_cmd)
 
+    if status != 0:
+        #Print error and exit
+        sys.stderr.write(f"Error compiling with command\n {compile_cmd}, check file with redirected output if it was provided \n")
+        sys.exit(status)
+        print("after exit")
 
 
 if __name__ == "__main__":

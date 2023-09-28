@@ -5,7 +5,6 @@
  * and by using a macro we dont have to write the same code in each class that uses the CRos1Publisher
  */
 
-
 /**
  * Macro to allow faster godot bind method creation
  *
@@ -18,64 +17,64 @@
  *
  * @see CSensorBasicCamera
  */
-#define GDROS1PUB_DEF_METHODS(CLASS, MEMBER_NAME, ROS1_MSG_TYPE)                                                                                         \
-    void CLASS::set_ros1_node_name(String f_node_name)                                                                                                   \
-    {                                                                                                                                                    \
+#define GDROS1PUB_DEF_METHODS(CLASS, MEMBER_NAME, ROS1_MSG_TYPE)                                                                            \
+    void CLASS::set_ros1_node_name(String f_node_name)                                                                                      \
+    {                                                                                                                                       \
         MEMBER_NAME.get_config().base_sensor_config.ros1_pub_config.set_node_name(f_node_name.utf8().get_data());                           \
-    }                                                                                                                                                    \
-                                                                                                                                                         \
-    String CLASS::get_ros1_node_name()                                                                                                                   \
-    {                                                                                                                                                    \
+    }                                                                                                                                       \
+                                                                                                                                            \
+    String CLASS::get_ros1_node_name()                                                                                                      \
+    {                                                                                                                                       \
         return MEMBER_NAME.get_config().base_sensor_config.ros1_pub_config.node_name().c_str();                                             \
-    }                                                                                                                                                    \
-                                                                                                                                                         \
-    void CLASS::set_ros1_topic_name(String f_topic_name)                                                                                                 \
-    {                                                                                                                                                    \
+    }                                                                                                                                       \
+                                                                                                                                            \
+    void CLASS::set_ros1_topic_name(String f_topic_name)                                                                                    \
+    {                                                                                                                                       \
         MEMBER_NAME.get_config().base_sensor_config.ros1_pub_config.set_topic_name(f_topic_name.utf8().get_data());                         \
-    }                                                                                                                                                    \
-    String CLASS::get_ros1_topic_name()                                                                                                                  \
-    {                                                                                                                                                    \
+    }                                                                                                                                       \
+    String CLASS::get_ros1_topic_name()                                                                                                     \
+    {                                                                                                                                       \
         return MEMBER_NAME.get_config().base_sensor_config.ros1_pub_config.topic_name().c_str();                                            \
-    }                                                                                                                                                    \
-    void CLASS::set_ros1_queue_size(int f_queue_size)                                                                                                    \
-    {                                                                                                                                                    \
+    }                                                                                                                                       \
+    void CLASS::set_ros1_queue_size(int f_queue_size)                                                                                       \
+    {                                                                                                                                       \
         MEMBER_NAME.get_config().base_sensor_config.ros1_pub_config.set_queue_size(f_queue_size);                                           \
-    }                                                                                                                                                    \
-    int CLASS::get_ros1_queue_size()                                                                                                                     \
-    {                                                                                                                                                    \
+    }                                                                                                                                       \
+    int CLASS::get_ros1_queue_size()                                                                                                        \
+    {                                                                                                                                       \
         return MEMBER_NAME.get_config().base_sensor_config.ros1_pub_config.queue_size();                                                    \
-    }                                                                                                                                                    \
-    void CLASS::set_ros1_pub_rate(float f_pub_rate_hz)                                                                                                   \
-    {                                                                                                                                                    \
+    }                                                                                                                                       \
+    void CLASS::set_ros1_pub_rate(float f_pub_rate_hz)                                                                                      \
+    {                                                                                                                                       \
         MEMBER_NAME.get_config().base_sensor_config.ros1_pub_config.set_pub_rate_hz_f32(f_pub_rate_hz);                                     \
-    }                                                                                                                                                    \
-    float CLASS::get_ros1_pub_rate()                                                                                                                     \
-    {                                                                                                                                                    \
+    }                                                                                                                                       \
+    float CLASS::get_ros1_pub_rate()                                                                                                        \
+    {                                                                                                                                       \
         return MEMBER_NAME.get_config().base_sensor_config.ros1_pub_config.pub_rate_hz_f32();                                               \
-    }                                                                                                                                                    \
-    void CLASS::set_ros1_pub_type_rate(int f_type)                                                                                                       \
-    {                                                                                                                                                    \
+    }                                                                                                                                       \
+    void CLASS::set_ros1_pub_type_rate(int f_type)                                                                                          \
+    {                                                                                                                                       \
         MEMBER_NAME.get_config().base_sensor_config.ros1_pub_config.set_pub_type(static_cast<::godot_grpc::ros1::ROS1PublishType>(f_type)); \
-    }                                                                                                                                                    \
-    int CLASS::get_ros1_pub_type_rate()                                                                                                                  \
-    {                                                                                                                                                    \
+    }                                                                                                                                       \
+    int CLASS::get_ros1_pub_type_rate()                                                                                                     \
+    {                                                                                                                                       \
         return static_cast<int>(MEMBER_NAME.get_config().base_sensor_config.ros1_pub_config.pub_type());                                    \
-    }                                                                                                                                                    \
-    void CLASS::set_ros1_grpc_server_ip(String f_grpc_server_ip)                                                                                         \
-    {                                                                                                                                                    \
-        MEMBER_NAME.get_config().base_sensor_config.grpc_config.server_address = f_grpc_server_ip.utf8().get_data();                 \
-    }                                                                                                                                                    \
-    String CLASS::get_ros1_grpc_server_ip()                                                                                                              \
-    {                                                                                                                                                    \
-        return MEMBER_NAME.get_config().base_sensor_config.grpc_config.server_address.c_str();                                        \
-    }                                                                                                                                                    \
-    void CLASS::set_ros1_grpc_server_port(String f_grpc_server_port)                                                                                     \
-    {                                                                                                                                                    \
-        MEMBER_NAME.get_config().base_sensor_config.grpc_config.server_port = f_grpc_server_port.utf8().get_data();             \
-    }                                                                                                                                                    \
-    String CLASS::get_ros1_grpc_server_port()                                                                                                            \
-    {                                                                                                                                                    \
-        return MEMBER_NAME.get_config().base_sensor_config.grpc_config.server_port.c_str();                                      \
+    }                                                                                                                                       \
+    void CLASS::set_ros1_grpc_server_ip(String f_grpc_server_ip)                                                                            \
+    {                                                                                                                                       \
+        MEMBER_NAME.get_config().base_sensor_config.grpc_config.server_address = f_grpc_server_ip.utf8().get_data();                        \
+    }                                                                                                                                       \
+    String CLASS::get_ros1_grpc_server_ip()                                                                                                 \
+    {                                                                                                                                       \
+        return MEMBER_NAME.get_config().base_sensor_config.grpc_config.server_address.c_str();                                              \
+    }                                                                                                                                       \
+    void CLASS::set_ros1_grpc_server_port(String f_grpc_server_port)                                                                        \
+    {                                                                                                                                       \
+        MEMBER_NAME.get_config().base_sensor_config.grpc_config.server_port = f_grpc_server_port.utf8().get_data();                         \
+    }                                                                                                                                       \
+    String CLASS::get_ros1_grpc_server_port()                                                                                               \
+    {                                                                                                                                       \
+        return MEMBER_NAME.get_config().base_sensor_config.grpc_config.server_port.c_str();                                                 \
     }
 
 /**
@@ -125,6 +124,9 @@
     ClassDB::bind_method(D_METHOD("get_ros1_pub_type_rate"), &CLASS::get_ros1_pub_type_rate);                                 \
     ClassDB::bind_method(D_METHOD("set_ros1_grpc_server_ip", "ros1_grpc_server_ip"), &CLASS::set_ros1_grpc_server_ip);        \
     ClassDB::bind_method(D_METHOD("get_ros1_grpc_server_ip"), &CLASS::get_ros1_grpc_server_ip);                               \
+    ClassDB::bind_method(D_METHOD("get_ros1_grpc_server_port"), &CLASS::get_ros1_grpc_server_port);                           \
+    ClassDB::bind_method(D_METHOD("set_ros1_grpc_server_port", "ros1_grpc_server_port"), &CLASS::set_ros1_grpc_server_port);  \
+    \ 
     ADD_PROPERTY(PropertyInfo(Variant::STRING, "ros1_node_name"), "set_ros1_node_name", "get_ros1_node_name");                \
     ADD_PROPERTY(PropertyInfo(Variant::STRING, "ros1_topic_name"), "set_ros1_topic_name", "get_ros1_topic_name");             \
     ADD_PROPERTY(PropertyInfo(Variant::INT, "ros1_queue_size"), "set_ros1_queue_size", "get_ros1_queue_size");                \

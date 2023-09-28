@@ -20,7 +20,7 @@ message(STATUS "*******************gRPC_INCLUDE_DIRS : " ${gRPC_INCLUDE_DIRS})
 
 
 
-find_package(Boost COMPONENTS chrono timer system headers REQUIRED)
+find_package(Boost COMPONENTS filesystem  REQUIRED)
 
 # Get ros libraries through glob on /opt/ros/noetic/lib
 file(GLOB ros_libs /opt/ros/noetic/lib/*.a /opt/ros/noetic/lib/*.so)
@@ -77,10 +77,11 @@ file(
 add_library(godot_ros_extension SHARED ${gd_extension_src})
 
 target_link_libraries(godot_ros_extension PRIVATE gRPC::grpc++ godot::cpp
-                                                  ${ros_libs} Boost::headers )
+                                                  ${ros_libs}  Boost::filesystem)
 
 target_include_directories(godot_ros_extension PRIVATE ${CMAKE_SOURCE_DIR}/src
                                                        /opt/ros/noetic/include/
+                                                       $<$<CONFIG:Debug>:${gRPC_INCLUDE_DIRS}>
                                                        )
 # Create custom target to run custom command before build
 add_custom_target(compile_gRPC)
@@ -90,6 +91,10 @@ add_custom_command(
   TARGET compile_gRPC
   PRE_BUILD
   WORKING_DIRECTORY $<TARGET_FILE_DIR:gRPC::grpc_cpp_plugin>
+
+  #Command to remove old files
+  COMMAND rm -rf ${CMAKE_SOURCE_DIR}/src/grpc_interface/gen_protoc/*
+
   COMMAND
     protobuf::protoc -I=${CMAKE_SOURCE_DIR}/src/grpc_interface/proto
     --cpp_out=${CMAKE_SOURCE_DIR}/src/grpc_interface/gen_protoc

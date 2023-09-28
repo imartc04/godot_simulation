@@ -10,23 +10,22 @@
 #include <string>
 #include <memory>
 #include <exception>
+#include <chrono>
 
 #include <grpc/grpc.h>
 #include <grpcpp/client_context.h>
+#include <grpcpp/server_context.h>
 #include <grpcpp/server.h>
 #include <grpcpp/create_channel.h>
 
 #include <grpcpp/server_context.h>
 #include <grpcpp/security/server_credentials.h>
 
-
-
 #include "grpc_interface/gen_protoc/ros1.pb.h"
 #include "grpc_interface/gen_protoc/simple_camera_service.grpc.pb.h"
 #include "grpc_interface/gen_protoc/simple_camera_service.pb.h"
 #include "grpc_interface/gen_protoc/ros1.pb.h"
 #include "grpc_interface/gen_protoc/commonMessages.pb.h"
-
 
 using namespace std;
 using namespace grpc;
@@ -99,7 +98,7 @@ void parse_grpc_msg_to_ros1_msg(const gcamera::imageMsg &grpc_msg, sensor_msgs::
     }
 }
 
-//Callback function to generate ros1 message from shared memory passed data
+// Callback function to generate ros1 message from shared memory passed data
 template <typename t_message>
 t_message gen_ros1_msg_from_shm_data()
 {
@@ -127,7 +126,7 @@ t_message gen_ros1_msg_from_shm_data()
     return std::move(ros1_msg);
 }
 
-//Function to send status message to gRPC server
+// Function to send status message to gRPC server
 int send_status_to_grpc_server(int i_status)
 {
     int l_ret = 0;
@@ -168,10 +167,20 @@ int send_status_to_grpc_server(int i_status)
 int main(int argc, char **argv)
 {
 
+    { // Aux debug wait for debugge to attach
+
+        bool l_aux = true;
+
+        while (l_aux)
+        {
+            std::this_thread::sleep_for(10s);
+        }
+    }
+
     int l_ret = 0;
 
     // Check passed arguments are correct and print help when needed
-    if (argc != 5)
+    if (argc != 3)
     {
         help();
         return 1;
@@ -180,12 +189,12 @@ int main(int argc, char **argv)
     // Create gRPC client from passed arguments
     std::string grpc_server_address = argv[1];
     std::string grpc_server_port = argv[2];
-    auto l_grpc_client = grpc::CreateChannel(grpc_server_address + ":" + grpc_server_port, grpc::InsecureChannelCredentials());
+    std::shared_ptr<Channel> l_grpc_client_channel = grpc::CreateChannel(grpc_server_address + ":" + grpc_server_port, grpc::InsecureChannelCredentials());
 
-    g_rpc_stub = ::godot_grpc::simple_camera_service::SimpleCameraService::NewStub(l_grpc_client);
+    g_rpc_stub = ::godot_grpc::simple_camera_service::SimpleCameraService::NewStub(l_grpc_client_channel);
 
     // Get ROS config from server
-    ClientContext l_context;
+    ::grpc::ClientContext l_context;
     ::godot_grpc::ros1::ROS1PublisherConfig l_ros_config;
     ::godot_grpc::emptyMsg l_req;
     auto l_status = g_rpc_stub->getROSConfig(&l_context, l_req, &l_ros_config);

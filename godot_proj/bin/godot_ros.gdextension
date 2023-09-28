@@ -5,5 +5,5 @@ compatibility_minimum = 4.1
 
 [libraries]
 
-linux.debug.x86_64 = "res://bin/libgodot_ros_extension.linux.template_debug.x86_64.so"
+linux.debug.x86_64 = "res://bin/gen/libgodot_ros_extension.so"
 

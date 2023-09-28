@@ -1,8 +1,8 @@
 [gd_scene load_steps=8 format=3 uid="uid://ckepjw8mau4i7"]
 
-[ext_resource type="PackedScene" uid="uid://bgeebur0s30ju" path="res://dae/summit_xl_chassis.dae" id="1_wpltg"]
-[ext_resource type="PackedScene" uid="uid://2m7crec0o4wp" path="res://dae/rubber_wheel_right.dae" id="2_w8nsx"]
-[ext_resource type="PackedScene" uid="uid://dkaa31pxpg4ge" path="res://dae/rubber_wheel_left.dae" id="3_rj7k8"]
+[ext_resource type="PackedScene" uid="uid://3uvxcwgeubbr" path="res://dae/summit_xl_chassis.dae" id="1_wpltg"]
+[ext_resource type="PackedScene" uid="uid://d07k8vqbkb5tb" path="res://dae/rubber_wheel_right.dae" id="2_w8nsx"]
+[ext_resource type="PackedScene" uid="uid://bxlqoqkqsd7xi" path="res://dae/rubber_wheel_left.dae" id="3_rj7k8"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_b2e1b"]
 size = Vector3(0.6, 0.2, 0.4)
@@ -110,6 +110,10 @@ mesh = SubResource("BoxMesh_oc6w8")
 [node name="CSensorBasicCamera" type="CSensorBasicCamera" parent="."]
 ros1_node_name = "summit_xl_front_camera"
 ros1_topic_name = "summit_xl_front_camera_image"
+ros1_queue_size = 10
+ros1_pub_rate = 10.0
+ros1_grpc_server_ip = "127.0.0.1"
+ros1_grpc_server_port = "50051"
 transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 0, 0, 0)
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]

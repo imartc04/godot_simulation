@@ -4,16 +4,15 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "gcc build_godot_ros",
+            "label": "gcc build_godot_ros_debug",
             "group": "build",
             "type": "shell",
-            "command": "scons -u use_gcc=True platform=linux > scons_out/temp_file 2>&1",
+            "command": "python3 compile.py --num-cores=17 --target=all --config=Debug --force-cmake=n",
             "options": {
                 "cwd": "${workspaceFolder}",
             },
             "args": [],
-            "problemMatcher": "$gcc",
-            "dependsOn": ["build protoc"]
+            "problemMatcher": "$gcc"
         },
         {
             "label": "clang build_godot_ros",
@@ -24,18 +23,6 @@
                 "cwd": "${workspaceFolder}",
             },
             "problemMatcher": "$gcc",
-            "dependsOn": ["build protoc"]
-        },
-
-        {
-            "label": "build protoc",
-            "group": "build",
-            "type": "shell",
-            "command": "${workspaceFolder}/deps/grpc_installed/bin/protoc -I ${workspaceFolder}/src/grpc_interface --grpc_out=${workspaceFolder}/src/grpc_interface/gen_protoc --cpp_out=${workspaceFolder}/src/grpc_interface/gen_protoc --plugin=protoc-gen-grpc=${workspaceFolder}/deps/grpc_installed/bin/grpc_cpp_plugin ${workspaceFolder}/src/grpc_interface/*.proto",
-            "options": {
-                "cwd": "${workspaceFolder}",
-            },
-            "problemMatcher": "$gcc"
         }
     ]
 }

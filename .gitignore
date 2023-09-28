@@ -3,4 +3,4 @@ deps/
 *.dblite
 *.os
 *.o
-aux_gen/
+

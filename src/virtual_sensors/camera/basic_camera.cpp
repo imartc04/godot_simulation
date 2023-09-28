@@ -94,6 +94,8 @@ void CSensorBasicCamera::_ready()
     m_camera_config.base_sensor_config.ros1_pub_config.set_enabled(true);
     m_camera_config.base_sensor_config.ros1_pub_config.set_pub_type( ::godot_grpc::ros1::ROS1PublishType::PUBLISH_TYPE_RATE);
 
+    m_camera_config.base_sensor_config.ros1_pub_config.set_topic_type("sensor_msgs/Image");
+
     // Configure ROS1 publisher
     t_baseSensor::set_config(m_camera_config.base_sensor_config);
 

@@ -6,18 +6,23 @@
 #include "grpc_interface/gen_protoc/simple_camera_service.grpc.pb.h"
 #include "grpc_interface/simple_camera_server_impl.hpp"
 #include <grpcpp/client_context.h>
-
+#include <exception>
+#include <locale>
 
 // #include <grpc/grpc.h>
-// #include <grpcpp/server.h>
+#include <grpcpp/server.h>
 #include <grpcpp/server_builder.h>
 
 #include <memory>
+
+#include <ros/ros.h> //ros time
 
 // #include "grpc_interface/gen_protoc/simple_camera_service.h"
 
 namespace godot
 {
+
+    namespace bp = ::boost::process;
 
     // Configuration struct
     template <typename t_godot_data_generated>
@@ -82,8 +87,28 @@ namespace godot
         typedef CBaseSensorConfig<t_godot_data_generated> t_config;
         typedef CBaseSensor<t_godot_data_generated> t_baseSensor;
 
-        CBaseSensor(){};
-        ~CBaseSensor(){};
+        CBaseSensor()
+        {
+
+            if (!::ros::Time::isValid())
+            {
+                ::ros::Time::init();
+            }
+        };
+        ~CBaseSensor()
+        {
+
+            if (m_ros1_pub_thread.joinable())
+            {
+                m_ros1_pub_thread.joinable();
+            }
+
+            if (m_ros1_pub_process)
+            {
+                m_ros1_pub_process->terminate();
+                m_ros1_pub_process->wait();
+            }
+        };
 
         void set_config(t_config const &f_config)
         {
@@ -106,11 +131,11 @@ namespace godot
             }
             else if (f_status == 2)
             {
-                // kill process
-                m_ros1_pub_process->terminate();
+
+                create_new_subprocess();
 
                 // Create new process
-                m_ros1_pub_process = std::make_unique<boost::process::child>(boost::process::search_path("ros1_pub_node"), boost::process::std_out > stdout, boost::process::std_err > stderr);
+                // m_ros1_pub_process = std::make_unique<boost::process::child>(boost::process::search_path("ros1_pub_node"), boost::process::std_out > stdout, boost::process::std_err > stderr);
             }
             else
             {
@@ -126,37 +151,6 @@ namespace godot
          */
         void init()
         {
-
-            // Create gRPC server builder
-            ::grpc::ServerBuilder builder;
-            builder.AddListeningPort(m_config.grpc_config.server_address+":"+m_config.grpc_config.server_port, grpc::InsecureServerCredentials());
-
-            // Create grpc server from config
-            if (m_config.ros1_pub_config.topic_type() == "sensor_msgs/Image")
-            {
-                auto l_service = std::make_shared<SimpleCameraServerImpl>();
-
-                builder.RegisterService(l_service.get());
-
-                // Set callback function to generate new image
-                l_service->set_data_callback(m_config.new_data_callback);
-
-                // Set ROS1 publisher config
-                l_service->set_ros1_config(m_config.ros1_pub_config);
-
-                // Set callback function to manage client status
-                l_service->set_client_status_callback(std::bind(&t_baseSensor::manage_ros1_pub_process, this, std::placeholders::_1));
-
-                m_grpc_server = builder.BuildAndStart();
-
-                // Create child process
-                m_ros1_pub_process = std::make_unique<boost::process::child>(boost::process::search_path("ros1_pub_node"), boost::process::std_out > stdout, boost::process::std_err > stderr);
-            }
-            else
-            {
-                std::cout << "Error: ros1 message type not supported" << std::endl;
-                return;
-            }
 
             // Create thread to manage ROS 1 publisher process
             m_ros1_pub_thread = std::thread(&t_baseSensor::ros1_pub_thread, this);
@@ -180,8 +174,60 @@ namespace godot
 
         /**** METHODS ****/
 
+        void create_new_subprocess()
+        {
+
+            // kill process if needed
+
+            if (m_ros1_pub_process)
+            {
+                m_ros1_pub_process->terminate();
+            }
+
+            auto env = boost::this_process::environment();
+
+            // Access the PATH variable
+            std::string pathVar = env["GODOT_GEN_BIN_DIR"].to_string();
+
+            // Create a boost::process::child with the command line
+            m_ros1_pub_process = std::make_unique<bp::child>(pathVar + "/ros1_pub_node", bp::args({m_config.grpc_config.server_address.c_str(), m_config.grpc_config.server_port.c_str()}), bp::std_out > stdout, bp::std_err > stderr, bp::std_in < stdin);
+        }
+
         void ros1_pub_thread()
         {
+            // Create gRPC server builder
+            ::grpc::ServerBuilder builder;
+            builder.AddListeningPort(m_config.grpc_config.server_address + ":" + m_config.grpc_config.server_port, grpc::InsecureServerCredentials());
+
+            // Create grpc server from config
+            if (m_config.ros1_pub_config.topic_type() == "sensor_msgs/Image")
+            {
+                auto l_service = std::make_shared<SimpleCameraServerImpl>();
+
+                builder.RegisterService(l_service.get());
+
+                // Set callback function to generate new image
+                l_service->set_data_callback(m_config.new_data_callback);
+
+                // Set ROS1 publisher config
+                l_service->set_ros1_config(m_config.ros1_pub_config);
+
+                // Set callback function to manage client status
+                l_service->set_client_status_callback(std::bind(&t_baseSensor::manage_ros1_pub_process, this, std::placeholders::_1));
+
+                m_grpc_server = builder.BuildAndStart();
+
+                // Create child process
+                create_new_subprocess();
+            }
+            else
+            {
+                std::cout << "Error: ros1 message type not supported" << std::endl;
+
+                // Throw error
+                throw std::runtime_error("Error: ros1 message type not supported");
+            }
+
             while (true)
             {
                 // Server wait for new requests

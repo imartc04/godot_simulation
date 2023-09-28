@@ -7,7 +7,7 @@
             "type": "cppdbg",
             "request": "launch",
             "program": "/root/Godot_v4.1.1-stable_linux.x86_64",
-            "additionalSOLibSearchPath": "/opt/ros/noetic/lib/;/usr/lib/x86_64-linux-gnu/",
+            //  "additionalSOLibSearchPath": "/opt/ros/noetic/lib/;/usr/lib/x86_64-linux-gnu/",
             "externalConsole": false,
             "MIMode": "gdb",
             "logging": {
@@ -36,9 +36,46 @@
                     "description": "Enable pretty printers"
                 }
             ],
-            "preLaunchTask": "gcc build_godot_ros",
-          
+            "environment": [
+                {
+                    "name": "GODOT_GEN_BIN_DIR",
+                    "value": "${workspaceFolder}/godot_proj/bin/gen"
+                    // "PATH" : "${workspaceFolder}/godot_proj/bin/gen:${env:PATH}",
+                    // "name": "PATH",
+                    // "value": "${workspaceFolder}/godot_proj/bin/gen:${env:PATH}"
+                },
+                // {
+                //     "name": "MY_CUSTOM_ENV_VAR",
+                //     "value": "some_value"
+                // }
+                // Add more environment variables as needed
+            ],
+            "preLaunchTask": "gcc build_godot_ros_debug",
         },
+
+
+        {
+            "name": "Subprocess ROS1 node",
+            "type": "cppdbg",
+            "request": "attach",
+            "processId": "${command:pickProcess}",
+            "program": "${workspaceFolder}/godot_proj/bin/gen/ros1_pub_node",
+            "MIMode": "gdb",
+            "logging": {
+                "moduleLoad": false,
+                "trace": true,
+                "exceptions": true,
+                "programOutput": true,
+            },
+            "setupCommands": [
+                {
+                    "text": "-enable-pretty-printing",
+                    "description": "Enable pretty printers"
+                }
+            ],
+        },
+
+
 
         {
             "name": "llvm debug godot ros",
@@ -77,7 +114,6 @@
                 }
             ],
             "preLaunchTask": "clang build_godot_ros",
-          
         }
     ]
 }
