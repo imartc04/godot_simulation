@@ -1,7 +1,7 @@
 import os
 import argparse
 
-def configure_and_build(config, target, num_cores, build_system, out_file):
+def configure_and_build(config, target, num_cores, build_system, out_file, force_cmake):
 
 
     l_multi_config_build_substr = ""
@@ -21,9 +21,16 @@ def configure_and_build(config, target, num_cores, build_system, out_file):
 
 
     l_conan_path = f"build/conan/{config}"
+    l_cmake_path = f"build/cmake/{config}"
+
+    #Chek if cmake dir has to be removed and created again
+    if force_cmake == "y":
+        print(f"Removing CMakeCache.txt file")
+        os.system(f"rm -rf build/cmake/{l_cmake_path}/*")
+
 
     # CMake configure for Make or simple Ninja
-    config_cmake_cmd = f". {l_conan_path}/conanbuild.sh && cmake . -G '{build_system}' -B build/cmake -DCMAKE_TOOLCHAIN_FILE={l_conan_path}/conan_toolchain.cmake {l_multi_config_cmake_config_str} {l_redirect_logging}  && cmake --version"
+    config_cmake_cmd = f". {l_conan_path}/conanbuild.sh && cmake . -G '{build_system}' -B {l_cmake_path} -DCMAKE_TOOLCHAIN_FILE={l_conan_path}/conan_toolchain.cmake {l_multi_config_cmake_config_str} {l_redirect_logging}  && cmake --version"
 
     print(f"Configuring CMake with command\n {config_cmake_cmd} \n")
 
@@ -46,12 +53,11 @@ def configure_and_build(config, target, num_cores, build_system, out_file):
     print(f"Current working directory: {os.getcwd()}")
 
 
-    compile_cmd = f". {l_conan_path}/conanbuild.sh && cmake --version && cmake --build build/cmake --target {target} {l_multi_config_build_substr} -- -j{num_cores} {l_redirect_logging}"
+    compile_cmd = f". {l_conan_path}/conanbuild.sh && cmake --version && cmake --build {l_cmake_path} --target {target} {l_multi_config_build_substr} -- -j{num_cores} {l_redirect_logging}"
 
     print(f"Compiling with command\n {compile_cmd} \n" )
 
     os.system(compile_cmd)
-
 
 
 
@@ -63,13 +69,15 @@ if __name__ == "__main__":
     parser.add_argument('--config', default="Release", help='CMake configuration (default: Release)')
     parser.add_argument('--target', required=True, default="all", help='Target to build (default: all)')
     parser.add_argument('--num-cores', type=int, default=1, help='Number of CPU cores to use for compilation (default: 1)')
-    parser.add_argument('--build-system', default="Ninja", help='CMake build system generator (default: Ninja Multi-Config)')
+    parser.add_argument('--build-system', default="Ninja", help='CMake build system generator (default: Ninja)')
     
     # Add argument for the output file
     parser.add_argument('--out-file', default="aux_gen/configure_and_compile_res.sh", help='Path to the output log file (default: aux_gen/configure_and_compile_res.sh)')
+
+    parser.add_argument("--force-cmake", default="y", help="Force CMake to run even if the CMakeCache.txt file exists (default: y, values: y/n)") 
 
     # Parse the command-line arguments
     args = parser.parse_args()
 
     # Call the configure_and_build function with the parsed arguments
-    configure_and_build(args.config, args.target, args.num_cores, args.build_system, args.out_file)
+    configure_and_build(args.config, args.target, args.num_cores, args.build_system, args.out_file, args.force_cmake)

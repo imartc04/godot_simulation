@@ -2,5 +2,5 @@
 .godot/
 dae/
 *.so
-bin/exec/
+bin/gen/
 

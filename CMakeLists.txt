@@ -8,11 +8,17 @@ project(GodotSimulation)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/godot_proj/bin/gen)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/godot_proj/bin/gen)
 
-# find_package(protobuf REQUIRED)
+find_package(protobuf REQUIRED)
 
 # set(gRPC_ROOT ${CMAKE_CURRENT_SOURCE_DIR}/build) find_package(Threads
 # REQUIRED)
+
 find_package(gRPC REQUIRED)
+
+#Print gRPC_INCLUDE_DIRS
+message(STATUS "*******************gRPC_INCLUDE_DIRS : " ${gRPC_INCLUDE_DIRS})
+
+
 
 find_package(Boost COMPONENTS chrono timer system headers REQUIRED)
 
@@ -46,7 +52,12 @@ add_subdirectory(deps/godot-cpp)
 add_executable(ros1_pub_node ${ros1_node_src_file} ${grpc_interface_src})
 
 target_include_directories(ros1_pub_node PRIVATE ${CMAKE_SOURCE_DIR}/src
-                                                 /opt/ros/noetic/include/)
+                                                 /opt/ros/noetic/include/
+
+
+                                                 $<$<CONFIG:Debug>:${gRPC_INCLUDE_DIRS}>
+                                                # /root/.conan2/p/b/proto2ad1b46c8da22/p/include/
+                                                 )
 
 target_link_libraries(ros1_pub_node PRIVATE ${ros_libs} gRPC::grpc++)
 
@@ -69,7 +80,8 @@ target_link_libraries(godot_ros_extension PRIVATE gRPC::grpc++ godot::cpp
                                                   ${ros_libs} Boost::headers )
 
 target_include_directories(godot_ros_extension PRIVATE ${CMAKE_SOURCE_DIR}/src
-                                                       /opt/ros/noetic/include/)
+                                                       /opt/ros/noetic/include/
+                                                       )
 # Create custom target to run custom command before build
 add_custom_target(compile_gRPC)
 
