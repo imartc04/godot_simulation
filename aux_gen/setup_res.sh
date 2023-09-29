@@ -3,7 +3,7 @@
 Profile host:
 [settings]
 arch=x86_64
-build_type=Debug
+build_type=Release
 compiler=gcc
 compiler.cppstd=17
 compiler.libcxx=libstdc++11
@@ -13,7 +13,7 @@ os=Linux
 Profile build:
 [settings]
 arch=x86_64
-build_type=Debug
+build_type=Release
 compiler=gcc
 compiler.cppstd=17
 compiler.libcxx=libstdc++11
@@ -42,16 +42,16 @@ Resolved version ranges
 
 ======== Computing necessary packages ========
 Requirements
-    abseil/20230125.3#5431a4c609f5fb48bb8d8567e953243f:08750ced5818baf5e6b65f893c826821284e904b#0fa64e5c9a11f277db6fc7fedc6e6201 - Cache
-    c-ares/1.19.1#420a0b77e370f4b96bee88ef91837ccc:b804365ba45236afc07c25702e3216903fd4656d#ebfb58c497cbea7b3a3aa9ec1ad7ffa8 - Cache
-    grpc/1.54.3#3e0d68cd1578502c9c3a0e8366f0ab77:fb50897d349a0a27c41082d444dd973bc2d2e8b1#177cd672c5b7b511b3746bf208a1e062 - Cache
-    openssl/3.1.2#8879e931d726a8aad7f372e28470faa1:fab59a11b80872d02c65346984e3f13027864b46#4b2effc30561d9eb039ccd59fcf83d04 - Cache
-    protobuf/3.21.12#8210c0b1bb46b08ff2814614ec091a9c:e82c780fb5e8baca6d3f9d56e9db9ae15e080712#58e0dca68a362daef1a559038d969580 - Cache
-    re2/20230301#56bcddd1eaca2b093fd34525ae40ee9b:103646feee59af8d1d7399312adb79f0102283eb#bd566847280cb4f1ca0b1b673fd68603 - Cache
-    zlib/1.2.13#97d5730b529b4224045fe7090592d4c1:e92f709e8c33be7dd821a2297638ce90bf3a6b63#9be7beba24d8a45228189283d6184044 - Cache
+    abseil/20230125.3#5431a4c609f5fb48bb8d8567e953243f:4bdfd36d50e15d6c87f6d89b85d456c9fd7cb8f1#9a405ba7ecf74acd0966367f1d0244c8 - Cache
+    c-ares/1.19.1#420a0b77e370f4b96bee88ef91837ccc:8141fe240b9dca158f0212d528c290b674b1079f#2e1eda64ce2e87ab3094a6aba2eef5fe - Cache
+    grpc/1.54.3#3e0d68cd1578502c9c3a0e8366f0ab77:a9a68de8ea9827594556e17fc857d64968c31cd4#b29e5dc06ea0129f273e2cd20a9cd713 - Cache
+    openssl/3.1.2#8879e931d726a8aad7f372e28470faa1:2b010f4baf8e367a9e2df7f714b35852aa8fa5aa#669fa67dde17e5dc1340d9942e75e376 - Cache
+    protobuf/3.21.12#8210c0b1bb46b08ff2814614ec091a9c:564f6aaa753a6ea624f9587e846185b5f7b7b5ff#d001a7a2816bb22a7c1a9e94867995f0 - Cache
+    re2/20230301#56bcddd1eaca2b093fd34525ae40ee9b:a9e567f7d82e17c61e9f1945ab46f0eb37d385f0#be0d01000abe52aecfed8bf3c10b7242 - Cache
+    zlib/1.2.13#97d5730b529b4224045fe7090592d4c1:72c852c5f0ae27ca0b1741e5fd7c8b8be91a590a#13d813e86f3ed001aacb076316a94475 - Cache
 Build requirements
     cmake/3.27.5#aa6b0dfc03844c3ce4bb57e2dfc33058:63fead0844576fc02943e16909f08fcdddd6f44b#9c2827d1c3de269612bfe59c24b71a4b - Cache
-    ninja/1.11.1#77587f8c8318662ac8e5a7867eb4be21:6c3784688ce1ae7a69d803259982d21dd8171d61#3ab92b0fa64b2b85ef500044a1aa429c - Cache
+    ninja/1.11.1#77587f8c8318662ac8e5a7867eb4be21:3593751651824fb813502c69c971267624ced41a#60e6fc0f973babfbed66a66af22a4f02 - Cache
 
 ======== Installing packages ========
 abseil/20230125.3: Already installed! (1 of 9)
@@ -64,20 +64,20 @@ zlib/1.2.13: Already installed! (6 of 9)
 openssl/3.1.2: Already installed! (7 of 9)
 protobuf/3.21.12: Already installed! (8 of 9)
 grpc/1.54.3: Already installed! (9 of 9)
-grpc/1.54.3: Appending PATH environment variable: /root/.conan2/p/b/grpc695bc84ffd6e7/p/bin
+grpc/1.54.3: Appending PATH environment variable: /root/.conan2/p/b/grpcb5a9934422396/p/bin
 WARN: deprecated: Usage of deprecated Conan 1.X features that will be removed in Conan 2.X:
-WARN: deprecated:     'cpp_info.names' used in: openssl/3.1.2, zlib/1.2.13, grpc/1.54.3, c-ares/1.19.1, abseil/20230125.3, protobuf/3.21.12
+WARN: deprecated:     'cpp_info.names' used in: protobuf/3.21.12, zlib/1.2.13, abseil/20230125.3, grpc/1.54.3, openssl/3.1.2, c-ares/1.19.1
 WARN: deprecated:     'cpp_info.build_modules' used in: openssl/3.1.2, abseil/20230125.3, grpc/1.54.3, protobuf/3.21.12
-WARN: deprecated:     'env_info' used in: openssl/3.1.2, cmake/3.27.5, grpc/1.54.3, c-ares/1.19.1, protobuf/3.21.12
+WARN: deprecated:     'env_info' used in: cmake/3.27.5, protobuf/3.21.12, grpc/1.54.3, openssl/3.1.2, c-ares/1.19.1
 WARN: deprecated:     'cpp_info.filenames' used in: protobuf/3.21.12
 
 ======== Finalizing install (deploy, generators) ========
-conanfile.py: Writing generators to /tfm/godot_simulation/build/conan/Debug
+conanfile.py: Writing generators to /tfm/godot_simulation/build/conan/Release
 conanfile.py: Generator 'CMakeDeps' calling 'generate()'
 conanfile.py: Generator 'CMakeToolchain' calling 'generate()'
 conanfile.py: CMakeToolchain generated: conan_toolchain.cmake
-conanfile.py: Preset 'conan-debug' added to CMakePresets.json. Invoke it manually using 'cmake --preset conan-debug' if using CMake>=3.23
-conanfile.py: If your CMake version is not compatible with CMakePresets (<3.23) call cmake like: 'cmake <path> -G "Unix Makefiles" -DCMAKE_TOOLCHAIN_FILE=/tfm/godot_simulation/build/conan/Debug/conan_toolchain.cmake -DCMAKE_POLICY_DEFAULT_CMP0091=NEW -DCMAKE_BUILD_TYPE=Debug'
+conanfile.py: Preset 'conan-release' added to CMakePresets.json. Invoke it manually using 'cmake --preset conan-release' if using CMake>=3.23
+conanfile.py: If your CMake version is not compatible with CMakePresets (<3.23) call cmake like: 'cmake <path> -G "Unix Makefiles" -DCMAKE_TOOLCHAIN_FILE=/tfm/godot_simulation/build/conan/Release/conan_toolchain.cmake -DCMAKE_POLICY_DEFAULT_CMP0091=NEW -DCMAKE_BUILD_TYPE=Release'
 conanfile.py: CMakeToolchain generated: CMakePresets.json
 conanfile.py: CMakeToolchain generated: ../../../CMakeUserPresets.json
 conanfile.py: Generating aggregated env files

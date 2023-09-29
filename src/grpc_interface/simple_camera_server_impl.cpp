@@ -4,7 +4,7 @@
 // Define methods
 ::grpc::Status SimpleCameraServerImpl::getImage(::grpc::ServerContext* context, const ::godot_grpc::simple_camera_service::imageRequestMsg* request, ::godot_grpc::simple_camera_service::imageMsg* response)
 {
-        
+    *response = m_gen_image_callback();
     return ::grpc::Status::OK;
 }
 

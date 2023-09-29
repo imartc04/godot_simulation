@@ -30,9 +30,8 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.188647, 0)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.160976, 0)
 shape = SubResource("BoxShape3D_b2e1b")
 
-[node name="Camera3D" type="Camera3D" parent="robot/rb_chassis"]
-transform = Transform3D(0.758734, 0.305408, -0.575369, -0.0710815, 0.916822, 0.392918, 0.647511, -0.257222, 0.717333, -1.07295, 0.779944, 1.66244)
-current = true
+[node name="Camera3D" type="Camera3D" parent="robot"]
+transform = Transform3D(0.961382, 0.13431, -0.24022, 0, 0.872837, 0.488012, 0.275218, -0.469166, 0.83913, -1.12311, 1.49247, 1.86333)
 
 [node name="joint_wheel_right_front" type="HingeJoint3D" parent="robot"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.233, 0.002, 0.233)
@@ -107,6 +106,15 @@ shape = SubResource("BoxShape3D_r5g31")
 [node name="ground_plane_mesh" type="MeshInstance3D" parent="ground_plane"]
 mesh = SubResource("BoxMesh_oc6w8")
 
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 10.6568, 0)
+
+[node name="Window" type="Window" parent="."]
+gui_embed_subwindows = true
+size = Vector2i(400, 400)
+
+[node name="SubViewport" type="SubViewport" parent="."]
+
 [node name="CSensorBasicCamera" type="CSensorBasicCamera" parent="."]
 ros1_node_name = "summit_xl_front_camera"
 ros1_topic_name = "summit_xl_front_camera_image"
@@ -114,7 +122,5 @@ ros1_queue_size = 10
 ros1_pub_rate = 10.0
 ros1_grpc_server_ip = "127.0.0.1"
 ros1_grpc_server_port = "50051"
-transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 0, 0, 0)
-
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 10.6568, 0)
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, -1.16336, 0.255919, 0)
+current = true

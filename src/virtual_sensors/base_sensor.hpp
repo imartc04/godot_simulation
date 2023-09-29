@@ -25,7 +25,7 @@ namespace godot
     namespace bp = ::boost::process;
 
     // Configuration struct
-    template <typename t_godot_data_generated>
+    template <typename t_data_gen>
     struct CBaseSensorConfig
     {
 
@@ -74,18 +74,18 @@ namespace godot
         /**
          * Callaback to generate new data
          */
-        std::function<t_godot_data_generated()> new_data_callback;
+        std::function<t_data_gen()> new_data_callback;
 
         // Ros pub config
         godot_grpc::ros1::ROS1PublisherConfig ros1_pub_config;
     };
 
-    template <typename t_godot_data_generated>
+    template <typename t_data_gen>
     class CBaseSensor
     {
     public:
-        typedef CBaseSensorConfig<t_godot_data_generated> t_config;
-        typedef CBaseSensor<t_godot_data_generated> t_baseSensor;
+        typedef CBaseSensorConfig<t_data_gen> t_config;
+        typedef CBaseSensor<t_data_gen> t_baseSensor;
 
         CBaseSensor()
         {
@@ -172,6 +172,8 @@ namespace godot
 
         std::unique_ptr<boost::process::child> m_ros1_pub_process;
 
+        std::shared_ptr<SimpleCameraServerImpl> camera_server;
+
         /**** METHODS ****/
 
         void create_new_subprocess()
@@ -202,18 +204,18 @@ namespace godot
             // Create grpc server from config
             if (m_config.ros1_pub_config.topic_type() == "sensor_msgs/Image")
             {
-                auto l_service = std::make_shared<SimpleCameraServerImpl>();
+                camera_server = std::make_shared<SimpleCameraServerImpl>();
 
-                builder.RegisterService(l_service.get());
+                builder.RegisterService(camera_server.get());
 
                 // Set callback function to generate new image
-                l_service->set_data_callback(m_config.new_data_callback);
+                camera_server->set_data_callback(m_config.new_data_callback);
 
                 // Set ROS1 publisher config
-                l_service->set_ros1_config(m_config.ros1_pub_config);
+                camera_server->set_ros1_config(m_config.ros1_pub_config);
 
                 // Set callback function to manage client status
-                l_service->set_client_status_callback(std::bind(&t_baseSensor::manage_ros1_pub_process, this, std::placeholders::_1));
+                camera_server->set_client_status_callback(std::bind(&t_baseSensor::manage_ros1_pub_process, this, std::placeholders::_1));
 
                 m_grpc_server = builder.BuildAndStart();
 

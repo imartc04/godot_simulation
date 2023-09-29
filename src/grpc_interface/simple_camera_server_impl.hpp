@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "gen_protoc/simple_camera_service.grpc.pb.h"
+#include "grpc_interface/gen_protoc/simple_camera_service.grpc.pb.h"
 #include <functional>
 #include "grpc_interface/gen_protoc/commonMessages.pb.h"
 
@@ -17,7 +17,7 @@
 class SimpleCameraServerImpl final : public ::godot_grpc::simple_camera_service::SimpleCameraService::Service
 {
 public:
-    typedef std::function<::godot::Image()> t_data_callback;
+    typedef std::function<::godot_grpc::simple_camera_service::imageMsg()> t_data_callback;
 
     typedef std::function<void(uint16_t)> t_set_client_status_callback;
 

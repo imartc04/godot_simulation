@@ -74,7 +74,7 @@ if __name__ == "__main__":
 
     # Add arguments for configuration
     parser.add_argument('--config', default="Release", help='CMake configuration (default: Release)')
-    parser.add_argument('--target', required=True, default="all", help='Target to build (default: all)')
+    parser.add_argument('--target', default="all", help='Target to build (default: all)')
     parser.add_argument('--num-cores', type=int, default=1, help='Number of CPU cores to use for compilation (default: 1)')
     parser.add_argument('--build-system', default="Ninja", help='CMake build system generator (default: Ninja)')
     

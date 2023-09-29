@@ -90,7 +90,10 @@ void parse_grpc_msg_to_ros1_msg(const gcamera::imageMsg &grpc_msg, sensor_msgs::
     // Set ros1 message data
     auto &l_data = grpc_msg.uint8_data();
 
-    ros1_msg.data.reserve(l_data.size());
+    auto l_num_data = l_data.size();
+
+    ros1_msg.data.clear();
+    ros1_msg.data.reserve(l_num_data);
 
     for (auto &i_byte_data : l_data)
     {
@@ -99,12 +102,8 @@ void parse_grpc_msg_to_ros1_msg(const gcamera::imageMsg &grpc_msg, sensor_msgs::
 }
 
 // Callback function to generate ros1 message from shared memory passed data
-template <typename t_message>
-t_message gen_ros1_msg_from_shm_data()
+void gen_ros1_img_data(::sensor_msgs::Image &f_ros1_msg)
 {
-    // Create ros1 message object
-    t_message ros1_msg;
-
     ClientContext l_context;
 
     gcamera::imageRequestMsg l_request;
@@ -116,14 +115,12 @@ t_message gen_ros1_msg_from_shm_data()
     if (l_status.ok())
     {
         // Parse gRPC message to ros1 message
-        parse_grpc_msg_to_ros1_msg(l_reply, ros1_msg);
+        parse_grpc_msg_to_ros1_msg(l_reply, f_ros1_msg);
     }
     else
     {
         cout << "Status return for get image from gRPC server is not ok" << endl;
     }
-
-    return std::move(ros1_msg);
 }
 
 // Function to send status message to gRPC server
@@ -224,7 +221,7 @@ int main(int argc, char **argv)
 
             // Set callback functino in ros1 publisher config data
 
-            ros1_pub_config->f_get_message = gen_ros1_msg_from_shm_data<::sensor_msgs::Image>;
+            ros1_pub_config->f_get_message = std::bind(gen_ros1_img_data, std::placeholders::_1);
             ros1_pub_config->proto_config = std::move(l_ros_config);
 
             // Set ros1 publisher config data

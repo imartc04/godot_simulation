@@ -6,19 +6,23 @@
 #include "godot_cpp/classes/window.hpp"
 #include "godot_cpp/classes/viewport.hpp"
 #include "godot_cpp/classes/ref.hpp"
+#include "godot_cpp/classes/image.hpp"
 #include <godot_cpp/variant/variant.hpp>
+#include "godot_cpp/classes/image.hpp"
+
+#include <map>
 #include <string>
 #include <memory>
-#include "ros_interface/ros1/ros1_pub_helper_macros.hpp"
-#include "godot_cpp/classes/image.hpp"
-#include <map>
-#include "virtual_sensors/base_sensor.hpp"
 #include <thread>
 #include <mutex>
 #include <condition_variable>
 #include <cstdint>
+#include <array>
 
+#include "virtual_sensors/base_sensor.hpp"
 #include "sensor_msgs/Image.h"
+#include "ros_interface/ros1/ros1_pub_helper_macros.hpp"
+#include "grpc_interface/gen_protoc/simple_camera_service.grpc.pb.h"
 
 namespace godot
 {
@@ -38,7 +42,7 @@ namespace godot
     struct CSensorBasicCameraConfig
     // Camera parameters
     {
-        CBaseSensorConfig<::godot::Image> base_sensor_config;
+        CBaseSensorConfig<::godot_grpc::simple_camera_service::imageMsg> base_sensor_config;
 
         // Camera name
         std::string cam_name;
@@ -220,13 +224,14 @@ namespace godot
      *
      */
     class CSensorBasicCamera : public Camera3D,
-                               public CBaseSensor<::godot::Image>
+                               public CBaseSensor<::godot_grpc::simple_camera_service::imageMsg>
     {
 
         GDCLASS(CSensorBasicCamera, Camera3D)
 
     public:
-    typedef CBaseSensor<::godot::Image> t_baseSensor;
+        typedef CBaseSensor<::godot_grpc::simple_camera_service::imageMsg> t_baseSensor;
+        typedef ::godot_grpc::simple_camera_service::imageMsg t_outImage;
 
     protected:
         /**
@@ -240,6 +245,12 @@ namespace godot
     public:
         CSensorBasicCamera();
         ~CSensorBasicCamera();
+
+
+        /**
+         * Method to get gRPC image type from last generated godot one
+        */
+        void parse_godot_out_image(uint64_t f_seq_id);
 
         /**
          * @brief Godot methot called for this node to initialize it
@@ -277,39 +288,19 @@ namespace godot
 
         bool get_ros_init_node_props();
 
-        ::sensor_msgs::Image gen_image_callback();
+        t_outImage gen_image_callback();
 
     private:
-        void convert_image_to_ros_msg(Image *f_godot_img);
-
-        /**
-         * Aux method for thread safe access to set variable
-         */
-        void set_pub_image_flag(bool f_flag_b);
-
-        /**
-         * Aux method for thread safe access to get variable
-         */
-        bool get_pub_image_flag();
-
-        /**
-         * Aux method for thread safe access to set variable
-         */
-        void set_new_image_ready_flag(bool f_flag_b);
-
-        /**
-         * Aux method for thread safe access to get variable
-         */
-        bool get_new_image_ready_flag();
+        // void convert_image_to_ros_msg(Image *f_godot_img);
 
         /**
          * Method to set initialzation flag
-        */
+         */
         void set_initialized(bool f_value);
 
         /**
          * Method to get initialzation flag
-        */
+         */
         bool get_initialized();
 
         /** Map godot image format to ROS image format
@@ -336,20 +327,29 @@ namespace godot
          */
         struct
         {
+
+            /**
+             * Buffers to manage image production
+             * The _process thread creates images on the m_write_buf
+             * while the callback to get images retrieves them from m_read_buf
+             */
+            std::array<::godot::Ref<::godot::Image>, 2> data_buf;
+            ::godot::Ref<::godot::Image> read_buf;
+            ::godot::Ref<::godot::Image> write_buf;
+
+            /**
+             * Mutex to manage read/write buffers
+             */
             std::mutex mutex;
-            std::condition_variable cond_var;
-            bool new_image_ready_b = false;
 
-            bool pub_image_b = false;
+            t_outImage out_image;
 
-            ::sensor_msgs::Image image_buffer;
+            /**
+             * Sequence counter for message ids
+             */
+            uint64_t seq_id = 0u;
 
-        } m_callback_flag;
-
-        /**
-         * Sequence counter for message ids
-         */
-        uint64_t m_seg_id = 0u;
+        } m_image_buf;
 
         // Config
         CSensorBasicCameraConfig m_camera_config;
@@ -359,11 +359,13 @@ namespace godot
         bool m_aux_first_call_init = true;
 
         /**
-         * Flag to check if initialized flag has been set 
-        */
+         * Flag to check if initialized flag has been set
+         */
         bool m_initialized = false;
 
         std::mutex m_mtx_init;
+
+        ::godot::Viewport* m_viewport;
     };
 
 }

@@ -28,12 +28,17 @@ if __name__ == "__main__":
 
     # Add an argument for the 'out-file' parameter
     parser.add_argument('--out-file', default="aux_gen/setup_res.sh", help='Name of the file where to redirect the commands output instead of console. If emtpy string passed then output will be in the console (default: aux_gen/setup_res.sh)')
-    parser.add_argument('--config', default="Release", help='Configuration to compile deps (default: Release)')
+    parser.add_argument('--config', default="all", help='Configuration to compile deps (default: all, options: all, Debug, Release)')
 
     # Parse the command-line arguments
     args = parser.parse_args()
 
     # Call the function with the specified arguments
 
+    #Generate in function of the configuration
 
-    gen_setup(args.out_file, args.config)
+    if args.config == "all":
+        gen_setup(args.out_file, "Debug")
+        gen_setup(args.out_file, "Release")
+    else:
+        gen_setup(args.out_file, args.config)

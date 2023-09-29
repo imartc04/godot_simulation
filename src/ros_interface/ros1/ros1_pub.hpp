@@ -29,7 +29,7 @@ namespace godot
         gros1::ROS1PublisherConfig proto_config;
 
         /** User callback function to generate new message*/
-        std::function<t_message_type()> f_get_message;
+        std::function<void (t_message_type &)> f_get_message;
     };
 
     /**
@@ -53,6 +53,8 @@ namespace godot
         ros::NodeHandle m_node_handle;
         ros::Publisher m_publisher;
         ros::Rate m_rate{10};
+
+        t_message_type m_msg;
 
         // Flag indicating if the ROS node is down
         bool m_ros_error = false;
@@ -204,9 +206,9 @@ namespace godot
 
                     if (ros::ok())
                     {
-                        auto l_message = m_config.f_get_message();
+                        m_config.f_get_message(m_msg);
 
-                        pub_message(l_message);
+                        pub_message(m_msg);
                     }
                     else
                     {
