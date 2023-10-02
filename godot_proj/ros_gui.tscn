@@ -1,0 +1,19 @@
+[gd_scene load_steps=2 format=3 uid="uid://bb8lc1hdmls1t"]
+
+[ext_resource type="Script" path="res://ros_gui.gd" id="1_b37cc"]
+
+[node name="CRosGui" type="CRosGui"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = -1112.0
+offset_bottom = -608.0
+script = ExtResource("1_b37cc")
+
+[node name="Button" type="Button" parent="."]
+layout_mode = 0
+offset_right = 8.0
+offset_bottom = 8.0
+text = "Init Ros system"
+
+[connection signal="pressed" from="Button" to="." method="_on_button_pressed"]

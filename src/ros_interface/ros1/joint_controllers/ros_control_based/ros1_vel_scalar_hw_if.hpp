@@ -1,11 +1,13 @@
 #pragma once
 
-#include <godot_cpp/classes/hinge_joint3d.hpp>
+//#include <godot_cpp/classes/hinge_joint3d.hpp>
 
 #include <hardware_interface/joint_command_interface.h>
 #include <hardware_interface/joint_state_interface.h>
 #include <hardware_interface/robot_hw.h>
-#include "ros1_control_if.hpp"
+
+#include "ros_interface/ros1/joint_controllers/ros1_control_if.hpp"
+#include <chrono>
 
 #include <mutex>
 
@@ -23,6 +25,12 @@ namespace godot
 
         /** Index referencing the variable used to read/write data in the order define in \ref Ros1ControlIf::set_new_joint_reads */
         uint16_t control_var_index;
+
+        /**
+         * Period in ms to update commands and control reads
+         * 
+        */
+        float update_period_ms;
     };
 
     /**
@@ -51,7 +59,7 @@ namespace godot
          * target velocity indicated by \ref CRos1VelocityHWinterfaceConfig::control_var_index
          *
          */
-        virtual void set_new_joint_reads(std::vector<double> const &) override;
+        void set_new_joint_reads(std::vector<double> const &) override;
 
         /**
          * Get joint commands
@@ -59,7 +67,7 @@ namespace godot
          * From the joint control inteface passed vector only necessary to read the
          * target velocity indicated by \ref CRos1VelocityHWinterfaceConfig::control_var_index
          */
-        virtual std::vector<double> get_joint_commands() const override;
+        std::vector<double> get_joint_commands() override;
 
         void set_config(CRos1VelocityHWinterfaceConfig const &config);
 

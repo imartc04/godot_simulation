@@ -8,6 +8,12 @@ def gen_setup(out_file, config):
 
     conan_cmd = f"conan install . --output-folder=build/conan/{config} --build=missing -s compiler.cppstd=17 -s compiler=gcc -s:b compiler.cppstd=17 -s:b compiler=gcc -s build_type={config} -s:b build_type={config}"
 
+    # conan_cmd = f"conan install . --output-folder=build/conan/{config} --build=missing -s compiler.libcxx=libc++ -s:b compiler.libcxx=libc++  -s compiler.cppstd=17 -s:b compiler.cppstd=17 -s compiler=clang -s:b compiler=clang -s compiler.version=12 -s:b compiler.version=12 -s build_type={config} -s:b build_type={config}"
+
+#     tools.build:exelinkflags: List of extra flags used by CMakeToolchain for CMAKE_EXE_LINKER_FLAGS_INIT variable
+
+# tools.build:sharedlinkflags:
+
     if out_file != "":
         print(f"Redirecting output to file: {out_file}")
         conan_cmd += f" > {out_file} 2>&1"

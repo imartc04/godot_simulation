@@ -36,7 +36,7 @@ void CRos1VelocityHWinterface::set_new_joint_reads(std::vector<double> const & f
     vel = f_vaues[1];
 }
 
-std::vector<double> CRos1VelocityHWinterface::get_joint_commands() const
+std::vector<double> CRos1VelocityHWinterface::get_joint_commands()
 {
     return {0.f, cmd};
 }

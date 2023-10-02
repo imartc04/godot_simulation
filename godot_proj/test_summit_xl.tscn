@@ -1,8 +1,9 @@
-[gd_scene load_steps=8 format=3 uid="uid://ckepjw8mau4i7"]
+[gd_scene load_steps=9 format=3 uid="uid://ckepjw8mau4i7"]
 
 [ext_resource type="PackedScene" uid="uid://3uvxcwgeubbr" path="res://dae/summit_xl_chassis.dae" id="1_wpltg"]
 [ext_resource type="PackedScene" uid="uid://d07k8vqbkb5tb" path="res://dae/rubber_wheel_right.dae" id="2_w8nsx"]
 [ext_resource type="PackedScene" uid="uid://bxlqoqkqsd7xi" path="res://dae/rubber_wheel_left.dae" id="3_rj7k8"]
+[ext_resource type="PackedScene" uid="uid://bb8lc1hdmls1t" path="res://ros_gui.tscn" id="4_2hcbg"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_b2e1b"]
 size = Vector3(0.6, 0.2, 0.4)
@@ -109,12 +110,6 @@ mesh = SubResource("BoxMesh_oc6w8")
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 10.6568, 0)
 
-[node name="Window" type="Window" parent="."]
-gui_embed_subwindows = true
-size = Vector2i(400, 400)
-
-[node name="SubViewport" type="SubViewport" parent="."]
-
 [node name="CSensorBasicCamera" type="CSensorBasicCamera" parent="."]
 ros1_node_name = "summit_xl_front_camera"
 ros1_topic_name = "summit_xl_front_camera_image"
@@ -124,3 +119,7 @@ ros1_grpc_server_ip = "127.0.0.1"
 ros1_grpc_server_port = "50051"
 transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, -1.16336, 0.255919, 0)
 current = true
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="CRosGui" parent="CanvasLayer" instance=ExtResource("4_2hcbg")]

@@ -26,7 +26,7 @@ namespace godot
             virtual void set_new_joint_reads(std::vector<double> const & ) = 0;
 
             /** Mehod to read last values of the joints. The vector is assued to be the same of provided in method \ref Ros1ControlIf::set_new_joint_reads*/
-            virtual std::vector<double> get_joint_commands() const = 0;
+            virtual std::vector<double> get_joint_commands() = 0;
     };
 
 

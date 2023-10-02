@@ -5,6 +5,8 @@ cmake_minimum_required(VERSION 3.27)
 project(GodotSimulation)
 
 
+include_directories(/usr/lib/llvm-12/include/)
+
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/godot_proj/bin/gen)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/godot_proj/bin/gen)
 
@@ -48,7 +50,7 @@ message(
 # Get godot-cpp target
 add_subdirectory(deps/godot-cpp)
 
-# Set target for ros 1 node
+##### Set target for ros 1 publisher node
 add_executable(ros1_pub_node ${ros1_node_src_file} ${grpc_interface_src})
 
 target_include_directories(ros1_pub_node PRIVATE ${CMAKE_SOURCE_DIR}/src
@@ -61,6 +63,42 @@ target_include_directories(ros1_pub_node PRIVATE ${CMAKE_SOURCE_DIR}/src
 
 target_link_libraries(ros1_pub_node PRIVATE ${ros_libs} gRPC::grpc++)
 
+######
+
+
+
+#### Target join velocity node conroller
+
+file(GLOB grpc_gen_joint_vel_src 
+${CMAKE_SOURCE_DIR}/src/grpc_interface/gen_protoc/joint_vel*.cc 
+${CMAKE_SOURCE_DIR}/src/grpc_interface/gen_protoc/commonMessages*.cc
+
+)
+
+add_executable(ros1_ros_control_joint_vel  
+src/ros1_nodes/ros1_ros_control_joint_vel.cpp
+ ${grpc_gen_joint_vel_src}
+ src/ros_interface/ros1/joint_controllers/ros_control_based/ros1_vel_scalar_hw_if.cpp
+
+)
+
+target_include_directories(ros1_ros_control_joint_vel PRIVATE ${CMAKE_SOURCE_DIR}/src
+                                                 /opt/ros/noetic/include/
+
+                                                 $<$<CONFIG:Debug>:${gRPC_INCLUDE_DIRS}>
+                                             
+                                                 )
+
+                                                 
+
+target_link_libraries(ros1_ros_control_joint_vel PRIVATE ${ros_libs} gRPC::grpc++)
+######
+
+
+# Add ros_manager library
+add_library(ros_manager SHARED src/ros_manager/ros_manager.cpp)
+
+
 # Get GDExtension src files
 file(
   GLOB_RECURSE
@@ -69,7 +107,9 @@ file(
   "src/grpc_interface/*.cpp"
   "src/grpc_interface/*.cc"
   "src/ros_interface/*.cpp"
-  "src/virtual_sensors/*.cpp")
+  "src/virtual_sensors/*.cpp"
+  "src/ros_gui/*.cpp"
+  )
 
 # Pring gd_extension_src message(STATUS "\n********\ngd_extension_src:
 # ${gd_extension_src} \n ********")
@@ -77,7 +117,9 @@ file(
 add_library(godot_ros_extension SHARED ${gd_extension_src})
 
 target_link_libraries(godot_ros_extension PRIVATE gRPC::grpc++ godot::cpp
-                                                  ${ros_libs}  Boost::filesystem)
+                                                  ${ros_libs}  Boost::filesystem
+                                                  ros_manager
+                                                  )
 
 target_include_directories(godot_ros_extension PRIVATE ${CMAKE_SOURCE_DIR}/src
                                                        /opt/ros/noetic/include/
@@ -105,8 +147,11 @@ add_custom_command(
 
 add_dependencies(godot_ros_extension compile_gRPC)
 add_dependencies(ros1_pub_node compile_gRPC)
+add_dependencies(ros1_ros_control_joint_vel compile_gRPC)
 
 # add_custom_target(build_all DEPENDS ros1_pub_node godot_ros_extension)
+
+
 
 # Add test project
 

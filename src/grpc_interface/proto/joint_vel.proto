@@ -1,0 +1,43 @@
+syntax = "proto3";
+package godot_grpc.joint_vel;
+
+import "commonMessages.proto";
+
+
+message jointVelocitiesMsg{
+
+    repeated float vels=1;
+}
+
+
+message jointVelConfigMsg{
+ /** Name of the controlled variable*/
+ string control_var_name = 1;
+
+ /** Index referencing the variable used to read/write data in the order define in \ref Ros1ControlIf::set_new_joint_reads */
+ uint32 control_var_index =2;
+
+ float update_period_ms = 3;
+
+}
+
+
+service JointVelService{
+
+    rpc setJointCommand(jointVelocitiesMsg) returns (godot_grpc.emptyMsg) {}
+
+    rpc readJointData(godot_grpc.emptyMsg) returns(jointVelocitiesMsg){}
+
+    rpc getConfig(godot_grpc.emptyMsg) returns(jointVelConfigMsg){}
+
+       /**
+    Set client status
+    Used by the client to notify several conditions : 
+    -  0 :  The node process closes it withouth problems
+    -  1 : The node is up but not running due some configuration error
+    -  2 : The node is down, need to be restarted
+  
+    */
+    rpc setClientStatus (godot_grpc.uint32Msg) returns (godot_grpc.emptyMsg) {}
+
+}

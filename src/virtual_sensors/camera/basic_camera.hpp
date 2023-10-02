@@ -296,12 +296,12 @@ namespace godot
         /**
          * Method to set initialzation flag
          */
-        void set_initialized(bool f_value);
+        // void set_initialized(bool f_value);
 
-        /**
-         * Method to get initialzation flag
-         */
-        bool get_initialized();
+        // /**
+        //  * Method to get initialzation flag
+        //  */
+        // bool get_initialized();
 
         /** Map godot image format to ROS image format
          *
@@ -333,7 +333,7 @@ namespace godot
              * The _process thread creates images on the m_write_buf
              * while the callback to get images retrieves them from m_read_buf
              */
-            std::array<::godot::Ref<::godot::Image>, 2> data_buf;
+            //std::array<::godot::Ref<::godot::Image>, 2> data_buf;
             ::godot::Ref<::godot::Image> read_buf;
             ::godot::Ref<::godot::Image> write_buf;
 
@@ -363,7 +363,7 @@ namespace godot
          */
         bool m_initialized = false;
 
-        std::mutex m_mtx_init;
+        // std::mutex m_mtx_init;
 
         ::godot::Viewport* m_viewport;
     };

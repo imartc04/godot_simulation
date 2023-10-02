@@ -3,23 +3,25 @@
 
 #include <godot_cpp/classes/hinge_joint3d.hpp>
 #include <memory>
-#include "ros1_control_if.hpp"
+#include "ros_interface/ros1/joint_controllers/ros1_control_if.hpp"
 
 namespace godot
 {
 
-    /**
-     * Config struct for CHingeJoint3DController
-     *
-     * The config struct holds ros1 control interface, which controls the velocity
-     * of the hinge joint. A hinge joint in godot is a joint that allows rotation on
-     * its z-axis controlled by velocity.
-     *
-     */
-    struct CHingeJoint3DControllerConfig
-    {
-        std::unique_ptr<Ros1ControlIf> ros1_control_if;
-    };
+    // /**
+    //  * Config struct for CHingeJoint3DController
+    //  *
+    //  * The config struct holds ros1 control interface, which controls the velocity
+    //  * of the hinge joint. A hinge joint in godot is a joint that allows rotation on
+    //  * its z-axis controlled by velocity.
+    //  *
+    //  */
+    // struct CHingeJoint3DControllerConfig
+    // {
+    //     std::unique_ptr<Ros1ControlIf> ros1_control_if;
+
+
+    // };
 
     /**
      * Controller for a godot hinge joint
@@ -49,8 +51,6 @@ namespace godot
         // Destructor
         ~CHingeJoint3DController();
 
-        // Set config
-        void set_config(CHingeJoint3DControllerConfig &&f_config);
 
         /**
          * \copydoc CSensorBasicCamera::_init
@@ -70,6 +70,8 @@ namespace godot
          */
         void _physics_process(float delta);
 
+
+
     protected:
         /**
          * \copydoc CSensorBasicCamera::_bind_methods
@@ -77,7 +79,24 @@ namespace godot
         static void _bind_methods();
 
     private:
-        CHingeJoint3DControllerConfig m_config;
+
+
+        enum class EControlTye
+        {
+            TOPIC_BASED,
+            ROS_CONTROL_PACKAGE
+        }m_control_type;
+
+        /**
+         * Initialization flag
+         */
+        bool m_initialized = false;
+
+
+        /**
+         * ROS 1 joint control interface
+        */
+        std::unique_ptr<Ros1ControlIf> m_control_if;
     };
 
 }

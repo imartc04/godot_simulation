@@ -5,9 +5,10 @@
 #include <godot_cpp/core/class_db.hpp>
 #include <godot_cpp/godot.hpp>
 
+
 //Include classes to register in godot
 #include "virtual_sensors/camera/basic_camera.hpp"
-
+#include "ros_gui/ros_gui.hpp"
 
 using namespace godot;
 
@@ -17,6 +18,7 @@ void initialize_godot_ros(ModuleInitializationLevel p_level) {
     }
 
     ClassDB::register_class<CSensorBasicCamera>();
+    ClassDB::register_class<CRosGui>();
 }
 
 void uninitialize_godot_ros(ModuleInitializationLevel p_level) {

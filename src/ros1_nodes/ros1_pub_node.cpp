@@ -27,6 +27,8 @@
 #include "grpc_interface/gen_protoc/ros1.pb.h"
 #include "grpc_interface/gen_protoc/commonMessages.pb.h"
 
+#include "node_utils.hpp"
+
 using namespace std;
 using namespace grpc;
 using namespace godot;
@@ -123,26 +125,7 @@ void gen_ros1_img_data(::sensor_msgs::Image &f_ros1_msg)
     }
 }
 
-// Function to send status message to gRPC server
-int send_status_to_grpc_server(int i_status)
-{
-    int l_ret = 0;
-    ::grpc::ClientContext l_context;
-    ::godot_grpc::uint32Msg l_request;
-    ::godot_grpc::emptyMsg l_reply;
 
-    l_request.set_value(i_status);
-
-    auto l_status = g_rpc_stub->setClientStatus(&l_context, l_request, &l_reply);
-
-    if (!l_status.ok())
-    {
-        cout << "Could not send status " << endl;
-        l_ret = 1;
-    }
-
-    return l_ret;
-}
 
 /**
  * Application that creates a ros1 publisher for a given ros1 message type
@@ -164,15 +147,15 @@ int send_status_to_grpc_server(int i_status)
 int main(int argc, char **argv)
 {
 
-    { // Aux debug wait for debugge to attach
+    // { // Aux debug wait for debugge to attach
 
-        bool l_aux = true;
+    //     bool l_aux = true;
 
-        while (l_aux)
-        {
-            std::this_thread::sleep_for(10s);
-        }
-    }
+    //     while (l_aux)
+    //     {
+    //         std::this_thread::sleep_for(10s);
+    //     }
+    // }
 
     int l_ret = 0;
 
@@ -232,7 +215,7 @@ int main(int argc, char **argv)
         else
         {
             std::cout << "Error: ros1 message type not supported" << std::endl;
-            send_status_to_grpc_server(1);
+            send_status_to_grpc_server(1, g_rpc_stub.get());
             l_ret = 1;
         }
 
@@ -246,13 +229,14 @@ int main(int argc, char **argv)
         if (m_ros_if->ros_error())
         {
             std::cout << "Error: ros1 publisher error" << std::endl;
-            send_status_to_grpc_server(2);
+            send_status_to_grpc_server(2, g_rpc_stub.get());
             l_ret = 2;
         }
+        
     }
     else
     {
-        send_status_to_grpc_server(1);
+        send_status_to_grpc_server(1, g_rpc_stub.get());
         return 1;
     }
 

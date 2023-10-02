@@ -3,7 +3,7 @@
 
 #include <godot_cpp/classes/generic6_dof_joint3d.hpp>
 #include <memory>
-#include "ros1_control_if.hpp"
+#include "ros_interface/ros1/joint_controllers/ros1_control_if.hpp"
 
 namespace godot
 {
