@@ -1,0 +1,9 @@
+{
+    packages = {
+        "/root/.xmake/packages/p/protobuf-cpp/3.19.4/93407f235be04551bbdabd5508f1b911",
+        "/root/.xmake/packages/l/libtool/2.4.7/f710939d070045c099f49e266ac2733e",
+        "/root/.xmake/packages/c/c-ares/1.19.0/a67ab67cc7124cf597c5345234837614",
+        "/root/.xmake/packages/a/abseil/20230125.2/6abbedf2189344f99fa1760b631d0197",
+        "/root/.xmake/packages/g/grpc/1.54.3/00c4b83070f6435aa611d0b42c91d0e5"
+    }
+}

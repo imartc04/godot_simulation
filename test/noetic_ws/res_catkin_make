@@ -1,0 +1,33 @@
+Scanning dependencies of target test_ros_control_node
+[ 50%] Building CXX object test_ros_control/CMakeFiles/test_ros_control_node.dir/src/test_ros_control_node.cpp.o
+/tfm/godot_simulation/test/noetic_ws/src/test_ros_control/src/test_ros_control_node.cpp:60:27: error: expected constructor, destructor, or type conversion before ‘(’ token
+   60 |    PLUGINLIB_DECLARE_CLASS(test_ros_control, VelocityController, controller_ns::CTestVelocityController, controller_interface::ControllerBase);
+      |                           ^
+/tfm/godot_simulation/test/noetic_ws/src/test_ros_control/src/test_ros_control_node.cpp: In function ‘int main(int, char**)’:
+/tfm/godot_simulation/test/noetic_ws/src/test_ros_control/src/test_ros_control_node.cpp:69:45: error: ‘robot’ was not declared in this scope
+   69 |   controller_manager::ControllerManager cm(&robot, nh);
+      |                                             ^~~~~
+/tfm/godot_simulation/test/noetic_ws/src/test_ros_control/src/test_ros_control_node.cpp:72:22: error: aggregate ‘ros::CallbackQueue ros_queue’ has incomplete type and cannot be defined
+   72 |   ros::CallbackQueue ros_queue;
+      |                      ^~~~~~~~~
+/tfm/godot_simulation/test/noetic_ws/src/test_ros_control/src/test_ros_control_node.cpp:79:27: error: ‘control_frequency’ was not declared in this scope
+   79 |       ros::Duration(1.0 / control_frequency),
+      |                           ^~~~~~~~~~~~~~~~~
+/tfm/godot_simulation/test/noetic_ws/src/test_ros_control/src/test_ros_control_node.cpp:80:19: error: ‘controlLoop’ was not declared in this scope
+   80 |       boost::bind(controlLoop, boost::ref(cm)),
+      |                   ^~~~~~~~~~~
+make[2]: *** [test_ros_control/CMakeFiles/test_ros_control_node.dir/build.make:63: test_ros_control/CMakeFiles/test_ros_control_node.dir/src/test_ros_control_node.cpp.o] Error 1
+make[1]: *** [CMakeFiles/Makefile2:1454: test_ros_control/CMakeFiles/test_ros_control_node.dir/all] Error 2
+make: *** [Makefile:141: all] Error 2
+Base path: /tfm/godot_simulation/test/noetic_ws
+Source space: /tfm/godot_simulation/test/noetic_ws/src
+Build space: /tfm/godot_simulation/test/noetic_ws/build
+Devel space: /tfm/godot_simulation/test/noetic_ws/devel
+Install space: /tfm/godot_simulation/test/noetic_ws/install
+####
+#### Running command: "make cmake_check_build_system" in "/tfm/godot_simulation/test/noetic_ws/build"
+####
+####
+#### Running command: "make -j20 -l20" in "/tfm/godot_simulation/test/noetic_ws/build"
+####
+Invoking "make -j20 -l20" failed

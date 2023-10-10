@@ -27,6 +27,11 @@ message ROS1PublisherConfig
 
     string topic_name = 2;
     
+    /**
+    - image
+    - joint_control
+    
+       */ 
     string topic_type = 3;
     
     uint32 queue_size = 4;

@@ -1,0 +1,289 @@
+{
+    find_program = {
+        brew = false,
+        emerge = false,
+        tar = "/usr/bin/tar",
+        dpkg = "/usr/bin/dpkg",
+        pacman = false,
+        ["pkg-config"] = "/usr/bin/pkg-config",
+        git = "/usr/bin/git",
+        unzip = "/usr/bin/unzip",
+        ping = false,
+        gzip = "/usr/bin/gzip"
+    },
+    find_package_linux_x86_64_fetch_package_xmake = {
+        ["xmake::zlib_c87914213a664f84bf1c9d8fc2e91878_release_v1.3_external"] = false,
+        ["xmake::openssl_aca9000bea7c4c7b80dc3e75313fdc8e_release_1.1.1-t_external"] = false,
+        ["xmake::grpc_00c4b83070f6435aa611d0b42c91d0e5_release_1.54.3_external"] = false,
+        ["xmake::protobuf-cpp_93407f235be04551bbdabd5508f1b911_release_3.19.4_external"] = {
+            links = {
+                "protobuf"
+            },
+            version = "3.19.4",
+            linkdirs = {
+                "/root/.xmake/packages/p/protobuf-cpp/3.19.4/93407f235be04551bbdabd5508f1b911/lib"
+            },
+            syslinks = "pthread",
+            static = true,
+            libfiles = {
+                "/root/.xmake/packages/p/protobuf-cpp/3.19.4/93407f235be04551bbdabd5508f1b911/lib/libprotobuf.a",
+                "/root/.xmake/packages/p/protobuf-cpp/3.19.4/93407f235be04551bbdabd5508f1b911/lib/libprotoc.a",
+                "/root/.xmake/packages/p/protobuf-cpp/3.19.4/93407f235be04551bbdabd5508f1b911/lib/libprotobuf-lite.a"
+            },
+            sysincludedirs = {
+                "/root/.xmake/packages/p/protobuf-cpp/3.19.4/93407f235be04551bbdabd5508f1b911/include"
+            }
+        },
+        ["xmake::re2_65320dc1961643bd96774b5bfac2fcd4_release_2022.02.01_external"] = false,
+        ["xmake::c-ares_a67ab67cc7124cf597c5345234837614_release_1.19.0_external"] = {
+            links = {
+                "cares"
+            },
+            version = "1.19.0",
+            linkdirs = {
+                "/root/.xmake/packages/c/c-ares/1.19.0/a67ab67cc7124cf597c5345234837614/lib"
+            },
+            sysincludedirs = {
+                "/root/.xmake/packages/c/c-ares/1.19.0/a67ab67cc7124cf597c5345234837614/include"
+            },
+            static = true,
+            libfiles = {
+                "/root/.xmake/packages/c/c-ares/1.19.0/a67ab67cc7124cf597c5345234837614/lib/libcares.a"
+            },
+            defines = "CARES_STATICLIB"
+        },
+        ["xmake::abseil_6abbedf2189344f99fa1760b631d0197_release_20230125.2_external"] = {
+            links = {
+                "absl_status",
+                "absl_cord",
+                "absl_flags",
+                "absl_flags_parse",
+                "absl_flags_internal",
+                "absl_flags_reflection",
+                "absl_flags_marshalling",
+                "absl_flags_commandlineflag_internal",
+                "absl_synchronization",
+                "absl_time",
+                "absl_hash",
+                "absl_city",
+                "absl_time_zone",
+                "absl_spinlock_wait",
+                "absl_failure_signal_handler",
+                "absl_bad_optional_access",
+                "absl_flags_commandlineflag",
+                "absl_random_internal_pool_urbg",
+                "absl_cordz_info",
+                "absl_cord_internal",
+                "absl_cordz_functions",
+                "absl_cordz_handle",
+                "absl_cordz_sample_token",
+                "absl_base",
+                "absl_bad_any_cast_impl",
+                "absl_periodic_sampler",
+                "absl_random_distributions",
+                "absl_flags_usage_internal",
+                "absl_random_seed_sequences",
+                "absl_throw_delegate",
+                "absl_stacktrace",
+                "absl_symbolize",
+                "absl_debugging_internal",
+                "absl_flags_private_handle_accessor",
+                "absl_strings",
+                "absl_flags_config",
+                "absl_malloc_internal",
+                "absl_str_format_internal",
+                "absl_flags_usage",
+                "absl_strings_internal",
+                "absl_flags_program_name",
+                "absl_int128",
+                "absl_scoped_set_env",
+                "absl_raw_hash_set",
+                "absl_random_internal_seed_material",
+                "absl_random_internal_randen",
+                "absl_random_internal_randen_slow",
+                "absl_random_internal_randen_hwaes_impl",
+                "absl_random_internal_randen_hwaes",
+                "absl_graphcycles_internal",
+                "absl_exponential_biased",
+                "absl_bad_variant_access",
+                "absl_statusor",
+                "absl_random_internal_distribution_test_util",
+                "absl_random_internal_platform",
+                "absl_hashtablez_sampler",
+                "absl_demangle_internal",
+                "absl_leak_check",
+                "absl_log_severity",
+                "absl_raw_logging_internal",
+                "absl_strerror",
+                "absl_examine_stack",
+                "absl_low_level_hash",
+                "absl_random_seed_gen_exception",
+                "absl_civil_time",
+                "absl_crc_cord_state",
+                "absl_crc32c",
+                "absl_crc_cpu_detect",
+                "absl_crc_internal"
+            },
+            version = "20230125.2",
+            linkdirs = {
+                "/root/.xmake/packages/a/abseil/20230125.2/6abbedf2189344f99fa1760b631d0197/lib"
+            },
+            libfiles = {
+                "/root/.xmake/packages/a/abseil/20230125.2/6abbedf2189344f99fa1760b631d0197/lib/libabsl_status.a",
+                "/root/.xmake/packages/a/abseil/20230125.2/6abbedf2189344f99fa1760b631d0197/lib/libabsl_cord.a",
+                "/root/.xmake/packages/a/abseil/20230125.2/6abbedf2189344f99fa1760b631d0197/lib/libabsl_flags.a",
+                "/root/.xmake/packages/a/abseil/20230125.2/6abbedf2189344f99fa1760b631d0197/lib/libabsl_flags_parse.a",
+                "/root/.xmake/packages/a/abseil/20230125.2/6abbedf2189344f99fa1760b631d0197/lib/libabsl_flags_internal.a",
+                "/root/.xmake/packages/a/abseil/20230125.2/6abbedf2189344f99fa1760b631d0197/lib/libabsl_flags_reflection.a",
+                "/root/.xmake/packages/a/abseil/20230125.2/6abbedf2189344f99fa1760b631d0197/lib/libabsl_flags_marshalling.a",
+                "/root/.xmake/packages/a/abseil/20230125.2/6abbedf2189344f99fa1760b631d0197/lib/libabsl_flags_commandlineflag_internal.a",
+                "/root/.xmake/packages/a/abseil/20230125.2/6abbedf2189344f99fa1760b631d0197/lib/libabsl_synchronization.a",
+                "/root/.xmake/packages/a/abseil/20230125.2/6abbedf2189344f99fa1760b631d0197/lib/libabsl_time.a",
+                "/root/.xmake/packages/a/abseil/20230125.2/6abbedf2189344f99fa1760b631d0197/lib/libabsl_hash.a",
+                "/root/.xmake/packages/a/abseil/20230125.2/6abbedf2189344f99fa1760b631d0197/lib/libabsl_city.a",
+                "/root/.xmake/packages/a/abseil/20230125.2/6abbedf2189344f99fa1760b631d0197/lib/libabsl_time_zone.a",
+                "/root/.xmake/packages/a/abseil/20230125.2/6abbedf2189344f99fa1760b631d0197/lib/libabsl_spinlock_wait.a",
+                "/root/.xmake/packages/a/abseil/20230125.2/6abbedf2189344f99fa1760b631d0197/lib/libabsl_failure_signal_handler.a",
+                "/root/.xmake/packages/a/abseil/20230125.2/6abbedf2189344f99fa1760b631d0197/lib/libabsl_bad_optional_access.a",
+                "/root/.xmake/packages/a/abseil/20230125.2/6abbedf2189344f99fa1760b631d0197/lib/libabsl_flags_commandlineflag.a",
+                "/root/.xmake/packages/a/abseil/20230125.2/6abbedf2189344f99fa1760b631d0197/lib/libabsl_random_internal_pool_urbg.a",
+                "/root/.xmake/packages/a/abseil/20230125.2/6abbedf2189344f99fa1760b631d0197/lib/libabsl_cordz_info.a",
+                "/root/.xmake/packages/a/abseil/20230125.2/6abbedf2189344f99fa1760b631d0197/lib/libabsl_cord_internal.a",
+                "/root/.xmake/packages/a/abseil/20230125.2/6abbedf2189344f99fa1760b631d0197/lib/libabsl_cordz_functions.a",
+                "/root/.xmake/packages/a/abseil/20230125.2/6abbedf2189344f99fa1760b631d0197/lib/libabsl_cordz_handle.a",
+                "/root/.xmake/packages/a/abseil/20230125.2/6abbedf2189344f99fa1760b631d0197/lib/libabsl_cordz_sample_token.a",
+                "/root/.xmake/packages/a/abseil/20230125.2/6abbedf2189344f99fa1760b631d0197/lib/libabsl_base.a",
+                "/root/.xmake/packages/a/abseil/20230125.2/6abbedf2189344f99fa1760b631d0197/lib/libabsl_bad_any_cast_impl.a",
+                "/root/.xmake/packages/a/abseil/20230125.2/6abbedf2189344f99fa1760b631d0197/lib/libabsl_periodic_sampler.a",
+                "/root/.xmake/packages/a/abseil/20230125.2/6abbedf2189344f99fa1760b631d0197/lib/libabsl_random_distributions.a",
+                "/root/.xmake/packages/a/abseil/20230125.2/6abbedf2189344f99fa1760b631d0197/lib/libabsl_flags_usage_internal.a",
+                "/root/.xmake/packages/a/abseil/20230125.2/6abbedf2189344f99fa1760b631d0197/lib/libabsl_random_seed_sequences.a",
+                "/root/.xmake/packages/a/abseil/20230125.2/6abbedf2189344f99fa1760b631d0197/lib/libabsl_throw_delegate.a",
+                "/root/.xmake/packages/a/abseil/20230125.2/6abbedf2189344f99fa1760b631d0197/lib/libabsl_stacktrace.a",
+                "/root/.xmake/packages/a/abseil/20230125.2/6abbedf2189344f99fa1760b631d0197/lib/libabsl_symbolize.a",
+                "/root/.xmake/packages/a/abseil/20230125.2/6abbedf2189344f99fa1760b631d0197/lib/libabsl_debugging_internal.a",
+                "/root/.xmake/packages/a/abseil/20230125.2/6abbedf2189344f99fa1760b631d0197/lib/libabsl_flags_private_handle_accessor.a",
+                "/root/.xmake/packages/a/abseil/20230125.2/6abbedf2189344f99fa1760b631d0197/lib/libabsl_strings.a",
+                "/root/.xmake/packages/a/abseil/20230125.2/6abbedf2189344f99fa1760b631d0197/lib/libabsl_flags_config.a",
+                "/root/.xmake/packages/a/abseil/20230125.2/6abbedf2189344f99fa1760b631d0197/lib/libabsl_malloc_internal.a",
+                "/root/.xmake/packages/a/abseil/20230125.2/6abbedf2189344f99fa1760b631d0197/lib/libabsl_str_format_internal.a",
+                "/root/.xmake/packages/a/abseil/20230125.2/6abbedf2189344f99fa1760b631d0197/lib/libabsl_flags_usage.a",
+                "/root/.xmake/packages/a/abseil/20230125.2/6abbedf2189344f99fa1760b631d0197/lib/libabsl_strings_internal.a",
+                "/root/.xmake/packages/a/abseil/20230125.2/6abbedf2189344f99fa1760b631d0197/lib/libabsl_flags_program_name.a",
+                "/root/.xmake/packages/a/abseil/20230125.2/6abbedf2189344f99fa1760b631d0197/lib/libabsl_int128.a",
+                "/root/.xmake/packages/a/abseil/20230125.2/6abbedf2189344f99fa1760b631d0197/lib/libabsl_scoped_set_env.a",
+                "/root/.xmake/packages/a/abseil/20230125.2/6abbedf2189344f99fa1760b631d0197/lib/libabsl_raw_hash_set.a",
+                "/root/.xmake/packages/a/abseil/20230125.2/6abbedf2189344f99fa1760b631d0197/lib/libabsl_random_internal_seed_material.a",
+                "/root/.xmake/packages/a/abseil/20230125.2/6abbedf2189344f99fa1760b631d0197/lib/libabsl_random_internal_randen.a",
+                "/root/.xmake/packages/a/abseil/20230125.2/6abbedf2189344f99fa1760b631d0197/lib/libabsl_random_internal_randen_slow.a",
+                "/root/.xmake/packages/a/abseil/20230125.2/6abbedf2189344f99fa1760b631d0197/lib/libabsl_random_internal_randen_hwaes_impl.a",
+                "/root/.xmake/packages/a/abseil/20230125.2/6abbedf2189344f99fa1760b631d0197/lib/libabsl_random_internal_randen_hwaes.a",
+                "/root/.xmake/packages/a/abseil/20230125.2/6abbedf2189344f99fa1760b631d0197/lib/libabsl_graphcycles_internal.a",
+                "/root/.xmake/packages/a/abseil/20230125.2/6abbedf2189344f99fa1760b631d0197/lib/libabsl_exponential_biased.a",
+                "/root/.xmake/packages/a/abseil/20230125.2/6abbedf2189344f99fa1760b631d0197/lib/libabsl_bad_variant_access.a",
+                "/root/.xmake/packages/a/abseil/20230125.2/6abbedf2189344f99fa1760b631d0197/lib/libabsl_statusor.a",
+                "/root/.xmake/packages/a/abseil/20230125.2/6abbedf2189344f99fa1760b631d0197/lib/libabsl_random_internal_distribution_test_util.a",
+                "/root/.xmake/packages/a/abseil/20230125.2/6abbedf2189344f99fa1760b631d0197/lib/libabsl_random_internal_platform.a",
+                "/root/.xmake/packages/a/abseil/20230125.2/6abbedf2189344f99fa1760b631d0197/lib/libabsl_hashtablez_sampler.a",
+                "/root/.xmake/packages/a/abseil/20230125.2/6abbedf2189344f99fa1760b631d0197/lib/libabsl_demangle_internal.a",
+                "/root/.xmake/packages/a/abseil/20230125.2/6abbedf2189344f99fa1760b631d0197/lib/libabsl_leak_check.a",
+                "/root/.xmake/packages/a/abseil/20230125.2/6abbedf2189344f99fa1760b631d0197/lib/libabsl_log_severity.a",
+                "/root/.xmake/packages/a/abseil/20230125.2/6abbedf2189344f99fa1760b631d0197/lib/libabsl_raw_logging_internal.a",
+                "/root/.xmake/packages/a/abseil/20230125.2/6abbedf2189344f99fa1760b631d0197/lib/libabsl_strerror.a",
+                "/root/.xmake/packages/a/abseil/20230125.2/6abbedf2189344f99fa1760b631d0197/lib/libabsl_examine_stack.a",
+                "/root/.xmake/packages/a/abseil/20230125.2/6abbedf2189344f99fa1760b631d0197/lib/libabsl_low_level_hash.a",
+                "/root/.xmake/packages/a/abseil/20230125.2/6abbedf2189344f99fa1760b631d0197/lib/libabsl_random_seed_gen_exception.a",
+                "/root/.xmake/packages/a/abseil/20230125.2/6abbedf2189344f99fa1760b631d0197/lib/libabsl_civil_time.a",
+                "/root/.xmake/packages/a/abseil/20230125.2/6abbedf2189344f99fa1760b631d0197/lib/libabsl_crc_cord_state.a",
+                "/root/.xmake/packages/a/abseil/20230125.2/6abbedf2189344f99fa1760b631d0197/lib/libabsl_crc32c.a",
+                "/root/.xmake/packages/a/abseil/20230125.2/6abbedf2189344f99fa1760b631d0197/lib/libabsl_crc_cpu_detect.a",
+                "/root/.xmake/packages/a/abseil/20230125.2/6abbedf2189344f99fa1760b631d0197/lib/libabsl_crc_internal.a",
+                "/root/.xmake/packages/a/abseil/20230125.2/6abbedf2189344f99fa1760b631d0197/lib/libabsl_log_internal_conditions.a",
+                "/root/.xmake/packages/a/abseil/20230125.2/6abbedf2189344f99fa1760b631d0197/lib/libabsl_log_internal_proto.a",
+                "/root/.xmake/packages/a/abseil/20230125.2/6abbedf2189344f99fa1760b631d0197/lib/libabsl_log_internal_nullguard.a",
+                "/root/.xmake/packages/a/abseil/20230125.2/6abbedf2189344f99fa1760b631d0197/lib/libabsl_log_flags.a",
+                "/root/.xmake/packages/a/abseil/20230125.2/6abbedf2189344f99fa1760b631d0197/lib/libabsl_log_entry.a",
+                "/root/.xmake/packages/a/abseil/20230125.2/6abbedf2189344f99fa1760b631d0197/lib/libabsl_die_if_null.a",
+                "/root/.xmake/packages/a/abseil/20230125.2/6abbedf2189344f99fa1760b631d0197/lib/libabsl_log_internal_globals.a",
+                "/root/.xmake/packages/a/abseil/20230125.2/6abbedf2189344f99fa1760b631d0197/lib/libabsl_log_internal_log_sink_set.a",
+                "/root/.xmake/packages/a/abseil/20230125.2/6abbedf2189344f99fa1760b631d0197/lib/libabsl_log_internal_check_op.a",
+                "/root/.xmake/packages/a/abseil/20230125.2/6abbedf2189344f99fa1760b631d0197/lib/libabsl_log_sink.a",
+                "/root/.xmake/packages/a/abseil/20230125.2/6abbedf2189344f99fa1760b631d0197/lib/libabsl_log_initialize.a",
+                "/root/.xmake/packages/a/abseil/20230125.2/6abbedf2189344f99fa1760b631d0197/lib/libabsl_log_globals.a",
+                "/root/.xmake/packages/a/abseil/20230125.2/6abbedf2189344f99fa1760b631d0197/lib/libabsl_log_internal_message.a",
+                "/root/.xmake/packages/a/abseil/20230125.2/6abbedf2189344f99fa1760b631d0197/lib/libabsl_log_internal_format.a"
+            },
+            static = true,
+            license = "Apache-2.0",
+            sysincludedirs = {
+                "/root/.xmake/packages/a/abseil/20230125.2/6abbedf2189344f99fa1760b631d0197/include"
+            }
+        }
+    },
+    find_programver = {
+        ["/usr/bin/git"] = "2.25.1"
+    },
+    find_package_linux_x86_64_fetch_package_system = {
+        openssl_aca9000bea7c4c7b80dc3e75313fdc8e_release_external = {
+            links = {
+                "ssl",
+                "crypto"
+            },
+            version = "1.1.1f",
+            linkdirs = {
+                "/usr/lib/x86_64-linux-gnu"
+            }
+        },
+        re2_65320dc1961643bd96774b5bfac2fcd4_release_external = {
+            links = {
+                "re2"
+            },
+            version = "0.0.0",
+            linkdirs = {
+                "/usr/lib/x86_64-linux-gnu"
+            },
+            shflags = {
+                "-pthread"
+            },
+            ldflags = {
+                "-pthread"
+            },
+            cxflags = {
+                "-std=c++11",
+                "-pthread"
+            }
+        },
+        ["pacman::zlib_c87914213a664f84bf1c9d8fc2e91878_release_external"] = false,
+        ["apt::zlib1g-dev_c87914213a664f84bf1c9d8fc2e91878_release_external"] = {
+            links = {
+                "z"
+            },
+            version = "1.2.11",
+            linkdirs = { },
+            sysincludedirs = { }
+        }
+    },
+    find_program_fetch_package_system = {
+        m4 = "/usr/bin/m4",
+        cmake = "/usr/bin/cmake",
+        ["pkg-config"] = "/usr/bin/pkg-config",
+        ["pacman::m4"] = false,
+        ["apt::autoconf"] = false,
+        autoconf = "/usr/bin/autoconf",
+        ["apt::m4"] = false
+    },
+    ["detect.sdks.find_vcpkgdir"] = false,
+    find_program_fetch_package_xmake = {
+        m4 = false,
+        ["pkg-config"] = false,
+        cmake = false,
+        libtool = false,
+        autoconf = false
+    },
+    find_programver_fetch_package_system = {
+        ["/usr/bin/m4"] = "1.4.18",
+        ["/usr/bin/pkg-config"] = "0.29.1",
+        ["/usr/bin/autoconf"] = "2.69",
+        ["/usr/bin/cmake"] = "3.16.3"
+    }
+}

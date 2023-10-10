@@ -3,7 +3,15 @@ import argparse
 import sys
 
 
-def configure_and_build(config, target, num_cores, build_system, out_file, force_cmake):
+def configure_and_build(args):
+
+    config = args.config
+
+    target = args.target
+    num_cores = args.num_cores
+    build_system = args.build_system
+    out_file = args.out_file
+    force_cmake = args.force_cmake
 
 
     l_multi_config_build_substr = ""
@@ -28,7 +36,7 @@ def configure_and_build(config, target, num_cores, build_system, out_file, force
     #Chek if cmake dir has to be removed and created again
     if force_cmake == "y":
         print(f"Removing CMakeCache.txt file")
-        os.system(f"rm -rf build/cmake/{l_cmake_path}/*")
+        os.system(f"rm -rf {l_cmake_path}/*")
 
 
     # CMake configure for Make or simple Ninja
@@ -73,8 +81,8 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Configure and build a CMake project.')
 
     # Add arguments for configuration
-    parser.add_argument('--config', default="Release", help='CMake configuration (default: Release)')
-    parser.add_argument('--target', default="all", help='Target to build (default: all)')
+    parser.add_argument('--config', default="Release", help='CMake configuration (default: Release, values: Release, Debug)')
+    parser.add_argument('--target', default="all", help='Target to build (default: all, values: one of the CMakeLists.txt target )')
     parser.add_argument('--num-cores', type=int, default=1, help='Number of CPU cores to use for compilation (default: 1)')
     parser.add_argument('--build-system', default="Ninja", help='CMake build system generator (default: Ninja)')
     
@@ -87,4 +95,4 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     # Call the configure_and_build function with the parsed arguments
-    configure_and_build(args.config, args.target, args.num_cores, args.build_system, args.out_file, args.force_cmake)
+    configure_and_build(args)

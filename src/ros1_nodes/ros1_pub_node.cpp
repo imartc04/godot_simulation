@@ -5,6 +5,7 @@
 #include <sstream>
 #include <ros/ros.h>
 #include <sensor_msgs/Image.h>
+#include <std_msgs/String.h>
 #include <map>
 #include <variant>
 #include <string>
@@ -24,6 +25,8 @@
 #include "grpc_interface/gen_protoc/ros1.pb.h"
 #include "grpc_interface/gen_protoc/simple_camera_service.grpc.pb.h"
 #include "grpc_interface/gen_protoc/simple_camera_service.pb.h"
+#include "grpc_interface/gen_protoc/joint_control_service.grpc.pb.h"
+
 #include "grpc_interface/gen_protoc/ros1.pb.h"
 #include "grpc_interface/gen_protoc/commonMessages.pb.h"
 
@@ -44,7 +47,7 @@ string g_ros_msg_image = "sensor_msgs/Image";
 
 namespace gcamera = ::godot_grpc::simple_camera_service;
 
-static std::unique_ptr<gcamera::SimpleCameraService::Stub> g_rpc_stub;
+// static std::unique_ptr<gcamera::SimpleCameraService::Stub> g_rpc_stub;
 
 uint64_t g_seq = 0;
 
@@ -54,78 +57,63 @@ void help()
     std::cout << "Usage: ros1_pub_node <grpc_server_address> <grpc_server_port>" << std::endl;
 }
 
-// Function to parse grpc message image to ros1 message image
-void parse_grpc_msg_to_ros1_msg(const gcamera::imageMsg &grpc_msg, sensor_msgs::Image &ros1_msg)
+
+std::shared_ptr<CRos1PublisherInterface> create_ros1_pub_image(Channel &f_channel)
 {
-    // Set ros1 message sequence checkingfor overflow
-    ros1_msg.header.seq = g_seq;
 
-    if (g_seq == UINT64_MAX)
-    {
-        g_seq = 0;
-    }
-    else
-    {
-        g_seq++;
-    }
+    auto l_stub = ::godot_grpc::simple_camera_service::SimpleCameraService::NewStub(f_channel);
 
-    // Set ros1 message stamp with ros time
-    ros1_msg.header.stamp = ros::Time::now();
+    auto l_ros1_pub = make_shared<CRos1Publisher<::sensor_msgs::Image>>();
 
-    ros1_msg.header.frame_id = grpc_msg.frame_id();
+    // Get ROS config from server
+    ::grpc::ClientContext l_context;
+    ::godot_grpc::ros1::ROS1PublisherConfig l_ros_config;
+    ::godot_grpc::emptyMsg l_req;
+    auto l_status = l_stub->getROSConfig(&l_context, l_req, &l_ros_config);
 
-    // Set ros1 message height
-    ros1_msg.height = grpc_msg.height();
+    auto ros1_pub = make_shared<CRos1Publisher<::sensor_msgs::Image>>();
 
-    // Set ros1 message width
-    ros1_msg.width = grpc_msg.width();
+    // Create ROS1 publisher config data
+    auto ros1_pub_config = make_shared<::godot::CRos1PublisherConfig<::sensor_msgs::Image>>();
 
-    // Set ros1 message encoding
-    ros1_msg.encoding = grpc_msg.encoding();
+    // Set callback functino in ros1 publisher config data
 
-    // Set ros1 message is_bigendian
-    ros1_msg.is_bigendian = grpc_msg.is_bigendian();
+    ros1_pub_config->f_get_message = std::bind(gen_ros1_img_data, std::placeholders::_1);
+    ros1_pub_config->proto_config = std::move(l_ros_config);
 
-    // Set ros1 message step
-    ros1_msg.step = grpc_msg.step();
+    // Set ros1 publisher config data
+    ros1_pub->set_config(*ros1_pub_config);
 
-    // Set ros1 message data
-    auto &l_data = grpc_msg.uint8_data();
-
-    auto l_num_data = l_data.size();
-
-    ros1_msg.data.clear();
-    ros1_msg.data.reserve(l_num_data);
-
-    for (auto &i_byte_data : l_data)
-    {
-        ros1_msg.data.push_back(static_cast<uint8_t>(i_byte_data));
-    }
-}
-
-// Callback function to generate ros1 message from shared memory passed data
-void gen_ros1_img_data(::sensor_msgs::Image &f_ros1_msg)
-{
-    ClientContext l_context;
-
-    gcamera::imageRequestMsg l_request;
-    gcamera::imageMsg l_reply;
-
-    // Get new image from gRPC server
-    auto l_status = g_rpc_stub->getImage(&l_context, l_request, &l_reply);
-
-    if (l_status.ok())
-    {
-        // Parse gRPC message to ros1 message
-        parse_grpc_msg_to_ros1_msg(l_reply, f_ros1_msg);
-    }
-    else
-    {
-        cout << "Status return for get image from gRPC server is not ok" << endl;
-    }
+    return std::static_pointer_cast<CRos1PublisherInterface>(ros1_pub);
 }
 
 
+
+std::shared_ptr<CRos1PublisherInterface> create_ros1_joint_control(Channel &f_channel)
+{
+
+    auto l_stub = ::godot_grpc::joint_control_service::jointControlService::NewStub(f_channel);
+
+    auto l_ros1_pub = make_shared<CRos1Publisher<::std_msgs::String>>();
+
+    // Get ROS config from server
+    ::grpc::ClientContext l_context;
+    ::godot_grpc::ros1::ROS1PublisherConfig l_ros_config;
+    ::godot_grpc::emptyMsg l_req;
+    auto l_status = l_stub->getROSConfig(&l_context, l_req, &l_ros_config);
+
+    // Create ROS1 publisher config data
+    auto ros1_pub_config = make_shared<::godot::CRos1PublisherConfig<::std_msgs::String>>();
+
+    // Set callback functino in ros1 publisher config data
+    ros1_pub_config->f_get_message = std::bind(gen_joint_control_msg, std::placeholders::_1);
+    ros1_pub_config->proto_config = std::move(l_ros_config);
+
+    // Set ros1 publisher config data
+    ros1_pub->set_config(*ros1_pub_config);
+
+    return std::static_pointer_cast<CRos1PublisherInterface>(ros1_pub);
+}
 
 /**
  * Application that creates a ros1 publisher for a given ros1 message type
@@ -135,7 +123,7 @@ void gen_ros1_img_data(::sensor_msgs::Image &f_ros1_msg)
  *
  *  - grpc_server_address: Address of the grpc server
  *  - grpc_server_port: Port of the grpc server
- *
+ *  - server_type : Server for sensor image data, joint control datata, altimeter etc.
  *
  * Return values :
  *
@@ -160,7 +148,7 @@ int main(int argc, char **argv)
     int l_ret = 0;
 
     // Check passed arguments are correct and print help when needed
-    if (argc != 3)
+    if (argc != 4)
     {
         help();
         return 1;
@@ -169,15 +157,9 @@ int main(int argc, char **argv)
     // Create gRPC client from passed arguments
     std::string grpc_server_address = argv[1];
     std::string grpc_server_port = argv[2];
+    string grpc_server_type = argv[3];
+
     std::shared_ptr<Channel> l_grpc_client_channel = grpc::CreateChannel(grpc_server_address + ":" + grpc_server_port, grpc::InsecureChannelCredentials());
-
-    g_rpc_stub = ::godot_grpc::simple_camera_service::SimpleCameraService::NewStub(l_grpc_client_channel);
-
-    // Get ROS config from server
-    ::grpc::ClientContext l_context;
-    ::godot_grpc::ros1::ROS1PublisherConfig l_ros_config;
-    ::godot_grpc::emptyMsg l_req;
-    auto l_status = g_rpc_stub->getROSConfig(&l_context, l_req, &l_ros_config);
 
     if (l_status.ok())
     {
@@ -192,25 +174,16 @@ int main(int argc, char **argv)
         }
 
         // Create storage for ROS1 publisher object as a variant
-        shared_ptr<CRos1PublisherInterface> m_ros_if;
+        shared_ptr<CRos1PublisherInterface> l_ros_if;
 
         // Create ros1 publisher object depending on the type of ros1 message
-        if (l_ros_config.topic_type() == g_ros_msg_image)
+        if (grpc_server_type == "image")
         {
-            std::shared_ptr<CRos1Publisher<::sensor_msgs::Image>> ros1_pub = make_shared<CRos1Publisher<::sensor_msgs::Image>>();
-
-            // Create ROS1 publisher config data
-            auto ros1_pub_config = make_shared<::godot::CRos1PublisherConfig<::sensor_msgs::Image>>();
-
-            // Set callback functino in ros1 publisher config data
-
-            ros1_pub_config->f_get_message = std::bind(gen_ros1_img_data, std::placeholders::_1);
-            ros1_pub_config->proto_config = std::move(l_ros_config);
-
-            // Set ros1 publisher config data
-            ros1_pub->set_config(*ros1_pub_config);
-
-            m_ros_if = std::static_pointer_cast<CRos1PublisherInterface>(ros1_pub);
+            l_ros_if = create_ros1_pub_image(l_grpc_client_channel);
+        }
+        else if (grpc_server_type == "joint_control")
+        {
+            l_ros_if = create_ros1_joint_control(l_grpc_client_channel);
         }
         else
         {
@@ -232,7 +205,6 @@ int main(int argc, char **argv)
             send_status_to_grpc_server(2, g_rpc_stub.get());
             l_ret = 2;
         }
-        
     }
     else
     {

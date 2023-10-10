@@ -4,7 +4,7 @@
 
 #include <string>
 #include <godot_cpp/variant/string.hpp>
-
+#include <map>
 
 namespace godot
 {
@@ -12,13 +12,16 @@ namespace godot
     // Convert a godot::String to std::string
     static std::string godotStringToStdString(const String &godotString)
     {
-        PoolStringArray array = godotString.utf8();
-        if (array.size() > 0)
-        {
-            const char *utf8Chars = array[0].c_str();
-            return std::string(utf8Chars);
-        }
-        return std::string(); // Return an empty string if conversion fails
+        return godotString.utf8().get_data();
     }
 
+}
+
+template <typename K, typename V>
+static std::map<V, K> reverse_map(const std::map<K, V> &m)
+{
+    std::map<V, K> r;
+    for (const auto &kv : m)
+        r[kv.second] = kv.first;
+    return r;
 }

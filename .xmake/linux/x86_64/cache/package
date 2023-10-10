@@ -1,0 +1,35 @@
+{
+    ["protobuf-cpp"] = {
+        links = "protobuf",
+        version = "3.19.4",
+        linkdirs = "/root/.xmake/packages/p/protobuf-cpp/3.19.4/93407f235be04551bbdabd5508f1b911/lib",
+        envs = {
+            PATH = {
+                "/root/.xmake/packages/p/protobuf-cpp/3.19.4/93407f235be04551bbdabd5508f1b911/bin",
+                "/root/.xmake/packages/c/cmake/3.26.4/70ca2de0269e418ea31bc5c390d4443f/bin"
+            },
+            LD_LIBRARY_PATH = {
+                "/root/.xmake/packages/p/protobuf-cpp/3.19.4/93407f235be04551bbdabd5508f1b911/lib",
+                "/root/.xmake/packages/c/cmake/3.26.4/70ca2de0269e418ea31bc5c390d4443f/lib"
+            }
+        },
+        static = true,
+        __enabled = true,
+        syslinks = "pthread",
+        installdir = "/root/.xmake/packages/p/protobuf-cpp/3.19.4/93407f235be04551bbdabd5508f1b911",
+        __requirestr = "protobuf-cpp",
+        sysincludedirs = "/root/.xmake/packages/p/protobuf-cpp/3.19.4/93407f235be04551bbdabd5508f1b911/include",
+        libfiles = {
+            "/root/.xmake/packages/p/protobuf-cpp/3.19.4/93407f235be04551bbdabd5508f1b911/lib/libprotobuf.a",
+            "/root/.xmake/packages/p/protobuf-cpp/3.19.4/93407f235be04551bbdabd5508f1b911/lib/libprotoc.a",
+            "/root/.xmake/packages/p/protobuf-cpp/3.19.4/93407f235be04551bbdabd5508f1b911/lib/libprotobuf-lite.a"
+        }
+    },
+    grpc = {
+        __requireconfs = {
+            system = false
+        },
+        __requirestr = "grpc 1.54.3",
+        __enabled = false
+    }
+}

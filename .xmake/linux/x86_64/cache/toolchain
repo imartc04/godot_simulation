@@ -1,0 +1,10 @@
+{
+    llvm_arch_x86_64_plat_linux = {
+        arch = "x86_64",
+        bindir = "/usr/lib/llvm-10/bin",
+        sdkdir = "/usr/lib/llvm-10/",
+        plat = "linux",
+        cross = "",
+        __global = true
+    }
+}

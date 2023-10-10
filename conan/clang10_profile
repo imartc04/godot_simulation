@@ -1,0 +1,20 @@
+[settings]
+arch=x86_64
+build_type=Release
+compiler=clang
+compiler.cppstd=17
+compiler.libcxx=libc++
+compiler.version=10
+os=Linux
+
+[buildenv]
+CC=/usr/bin/clang-10
+CXX=/usr/bin/clang++-10
+LD=/usr/lib/llvm-10/bin/ld.lld
+
+
+[conf]
+tools.build:cxxflags=["-std=c++17"]
+tools.build:exelinkflags=["-fuse-ld=/usr/lib/llvm-10/bin/ld.lld", "-lc++"]
+tools.build:sharedlinkflags=["-fuse-ld=lld", "-lc++"]
+

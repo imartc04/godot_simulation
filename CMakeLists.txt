@@ -4,11 +4,9 @@ cmake_minimum_required(VERSION 3.27)
 # Set project name
 project(GodotSimulation)
 
-
-include_directories(/usr/lib/llvm-12/include/)
-
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/godot_proj/bin/gen)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/godot_proj/bin/gen)
+
 
 find_package(protobuf REQUIRED)
 
@@ -21,11 +19,12 @@ find_package(gRPC REQUIRED)
 message(STATUS "*******************gRPC_INCLUDE_DIRS : " ${gRPC_INCLUDE_DIRS})
 
 
-
 find_package(Boost COMPONENTS filesystem  REQUIRED)
 
 # Get ros libraries through glob on /opt/ros/noetic/lib
-file(GLOB ros_libs /opt/ros/noetic/lib/*.a /opt/ros/noetic/lib/*.so)
+file(GLOB_RECURSE ros_libs "/opt/ros/noetic/lib/*.a"  "/opt/ros/noetic/lib/*.so")
+
+message(STATUS "************ ros_libs :  ${ros_libs}")
 
 set(ros_include_base /opt/ros/noetic/include)
 file(
@@ -58,41 +57,41 @@ target_include_directories(ros1_pub_node PRIVATE ${CMAKE_SOURCE_DIR}/src
 
 
                                                  $<$<CONFIG:Debug>:${gRPC_INCLUDE_DIRS}>
-                                                # /root/.conan2/p/b/proto2ad1b46c8da22/p/include/
+                                              
                                                  )
 
-target_link_libraries(ros1_pub_node PRIVATE ${ros_libs} gRPC::grpc++)
+target_link_libraries(ros1_pub_node PRIVATE ${ros_libs} gRPC::grpc++ ) 
 
 ######
 
 
 
-#### Target join velocity node conroller
+# #### Target join velocity node conroller
 
-file(GLOB grpc_gen_joint_vel_src 
-${CMAKE_SOURCE_DIR}/src/grpc_interface/gen_protoc/joint_vel*.cc 
-${CMAKE_SOURCE_DIR}/src/grpc_interface/gen_protoc/commonMessages*.cc
+# file(GLOB grpc_gen_joint_vel_src 
+# ${CMAKE_SOURCE_DIR}/src/grpc_interface/gen_protoc/joint_vel*.cc 
+# ${CMAKE_SOURCE_DIR}/src/grpc_interface/gen_protoc/commonMessages*.cc
 
-)
+# )
 
-add_executable(ros1_ros_control_joint_vel  
-src/ros1_nodes/ros1_ros_control_joint_vel.cpp
- ${grpc_gen_joint_vel_src}
- src/ros_interface/ros1/joint_controllers/ros_control_based/ros1_vel_scalar_hw_if.cpp
+# add_executable(ros1_ros_control_joint_vel  
+# src/ros1_nodes/ros1_ros_control_joint_vel.cpp
+#  ${grpc_gen_joint_vel_src}
 
-)
 
-target_include_directories(ros1_ros_control_joint_vel PRIVATE ${CMAKE_SOURCE_DIR}/src
-                                                 /opt/ros/noetic/include/
+# )
 
-                                                 $<$<CONFIG:Debug>:${gRPC_INCLUDE_DIRS}>
+# target_include_directories(ros1_ros_control_joint_vel PRIVATE ${CMAKE_SOURCE_DIR}/src
+#                                                  /opt/ros/noetic/include/
+
+#                                                  $<$<CONFIG:Debug>:${gRPC_INCLUDE_DIRS}>
                                              
-                                                 )
+#                                                  )
 
                                                  
 
-target_link_libraries(ros1_ros_control_joint_vel PRIVATE ${ros_libs} gRPC::grpc++)
-######
+# target_link_libraries(ros1_ros_control_joint_vel PRIVATE ${ros_libs} gRPC::grpc++)
+# ######
 
 
 # Add ros_manager library
@@ -117,14 +116,32 @@ file(
 add_library(godot_ros_extension SHARED ${gd_extension_src})
 
 target_link_libraries(godot_ros_extension PRIVATE gRPC::grpc++ godot::cpp
-                                                  ${ros_libs}  Boost::filesystem
+                                                    Boost::filesystem
                                                   ros_manager
                                                   )
 
 target_include_directories(godot_ros_extension PRIVATE ${CMAKE_SOURCE_DIR}/src
+                                                      #  /opt/ros/noetic/include/
+                                                       $<$<CONFIG:Debug>:${gRPC_INCLUDE_DIRS}>
+                                                       )
+
+
+
+##### Target shared library to manage ROS1
+
+add_library(ros1_system_manager SHARED "src/ros_interface/ros1/ros1_system_manager/ros1_system_manager.cpp")
+
+target_include_directories(ros1_system_manager PRIVATE ${CMAKE_SOURCE_DIR}/src
                                                        /opt/ros/noetic/include/
                                                        $<$<CONFIG:Debug>:${gRPC_INCLUDE_DIRS}>
                                                        )
+
+target_link_libraries(ros1_system_manager PRIVATE ${ros_libs} gRPC::grpc++)
+
+
+#####
+
+
 # Create custom target to run custom command before build
 add_custom_target(compile_gRPC)
 
@@ -147,7 +164,8 @@ add_custom_command(
 
 add_dependencies(godot_ros_extension compile_gRPC)
 add_dependencies(ros1_pub_node compile_gRPC)
-add_dependencies(ros1_ros_control_joint_vel compile_gRPC)
+add_dependencies(ros1_system_manager compile_gRPC)
+# add_dependencies(ros1_ros_control_joint_vel compile_gRPC)
 
 # add_custom_target(build_all DEPENDS ros1_pub_node godot_ros_extension)
 

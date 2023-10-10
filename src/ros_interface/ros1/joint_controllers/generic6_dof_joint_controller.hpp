@@ -17,7 +17,7 @@ namespace godot
      */
     struct CGeneric6DOFControllerConfig
     {
-        std::array<std::unique_ptr<Ros1ControlIf>, 6u> ros1_control_if;
+        std::array<std::unique_ptr<ControlIf>, 6u> ros1_control_if;
     };
 
     /**

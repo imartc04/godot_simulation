@@ -15,6 +15,8 @@ using namespace godot;
 
 GDROS1PUB_DEF_METHODS(CSensorBasicCamera, (*this), ::sensor_msgs::Image)
 
+GRPC_DEFINE_METHODS(CSensorBasicCamera, m_camera_config.base_sensor_config.grpc_subprocess_config)
+
 void CSensorBasicCamera::_bind_methods()
 {
 

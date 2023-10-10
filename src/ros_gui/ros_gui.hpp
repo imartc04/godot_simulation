@@ -7,7 +7,7 @@ namespace godot
 {
 
     /**
-     *
+     *Godot node to initialize ROS system wihing Godot 
      *
      */
     class CRosGui : public Control

@@ -20,8 +20,8 @@
 #include <array>
 
 #include "virtual_sensors/base_sensor.hpp"
-#include "sensor_msgs/Image.h"
 #include "ros_interface/ros1/ros1_pub_helper_macros.hpp"
+#include "grpc_interface/grpc_godot_helper_macros.hpp"
 #include "grpc_interface/gen_protoc/simple_camera_service.grpc.pb.h"
 
 namespace godot
@@ -282,7 +282,9 @@ namespace godot
 
         void _notification(int f_notification);
 
-        GDROS1PUB_DECLARE_METHODS()
+        GDROS1PUB_DECLARE_METHODS
+
+        GRPC_DECLARE_METHODS
 
         void set_ros_init_node_props(bool f_value);
 

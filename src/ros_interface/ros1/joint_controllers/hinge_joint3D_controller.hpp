@@ -4,6 +4,9 @@
 #include <godot_cpp/classes/hinge_joint3d.hpp>
 #include <memory>
 #include "ros_interface/ros1/joint_controllers/ros1_control_if.hpp"
+#include "grpc_interface/grpc_subprocess_manager.hpp"
+#include "grpc_interface/grpc_godot_helper_macros.hpp"
+#include "ros_interface/ros1/joint_controllers/joint_control_manager.hpp"
 
 namespace godot
 {
@@ -19,7 +22,6 @@ namespace godot
     // struct CHingeJoint3DControllerConfig
     // {
     //     std::unique_ptr<Ros1ControlIf> ros1_control_if;
-
 
     // };
 
@@ -51,7 +53,6 @@ namespace godot
         // Destructor
         ~CHingeJoint3DController();
 
-
         /**
          * \copydoc CSensorBasicCamera::_init
          */
@@ -70,7 +71,26 @@ namespace godot
          */
         void _physics_process(float delta);
 
+        GRPC_DECLARE_METHODS
 
+        void set_control_type(::godot::String f_control_type);
+
+        // get_control_type method
+        ::godot::String get_control_type();
+
+        void set_joint_name(::godot::String f_joint_name);
+
+        ::godot::String get_joint_name();
+
+        /**
+         * Set controls signal update period
+         */
+        void set_update_period_ms(float f_update_period_ms);
+
+        /**
+         * Get controls signal update period
+         */
+        float get_update_period_ms();
 
     protected:
         /**
@@ -79,24 +99,28 @@ namespace godot
         static void _bind_methods();
 
     private:
+        // Joint name
+        ::godot::String m_joint_name;
 
+        std::map<::godot::String, EControlTye> m_str_to_control_type_map = {
+            {"topic_based", EControlTye::TOPIC_BASED},
+            {"ros_control_package", EControlTye::ROS_CONTROL_PACKAGE}};
 
-        enum class EControlTye
-        {
-            TOPIC_BASED,
-            ROS_CONTROL_PACKAGE
-        }m_control_type;
+        std::map<EControlTye, ::godot::String> m_control_type_to_str_map;
 
         /**
          * Initialization flag
          */
         bool m_initialized = false;
 
-
         /**
          * ROS 1 joint control interface
-        */
-        std::unique_ptr<Ros1ControlIf> m_control_if;
-    };
+         */
+        std::unique_ptr<CJointControlManager> m_control_if;
 
+        // Configuration for child process when used
+        CJointControlManagerConfig m_config;
+
+        t_joint_values m_joint_reads;
+    };
 }

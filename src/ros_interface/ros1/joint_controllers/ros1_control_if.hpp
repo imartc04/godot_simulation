@@ -6,18 +6,17 @@
 namespace godot
 {
     /**
-     * Interface for ros1 control
+     * Interface for joint control
      * 
      * This interface has been created to abstract the joint controllers from 
-     * the method of controlling them, for example ros1_control, ros2_control or topic based. 
-     * This approach also allows easy integration of new types of controlling the jonts.
+     * the method of controlling them
     */
-    class Ros1ControlIf
+    class ControlIf
     {
 
         public:
-            Ros1ControlIf(){};
-            virtual ~Ros1ControlIf() = default;
+            ControlIf(){};
+            virtual ~ControlIf() = default;
 
             /** Method where the user must provide new values to command joints velocities
              * 

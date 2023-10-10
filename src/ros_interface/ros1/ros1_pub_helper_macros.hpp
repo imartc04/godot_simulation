@@ -59,23 +59,7 @@
     int CLASS::get_ros1_pub_type_rate()                                                                                                     \
     {                                                                                                                                       \
         return static_cast<int>(MEMBER_NAME.get_config().base_sensor_config.ros1_pub_config.pub_type());                                    \
-    }                                                                                                                                       \
-    void CLASS::set_ros1_grpc_server_ip(String f_grpc_server_ip)                                                                            \
-    {                                                                                                                                       \
-        MEMBER_NAME.get_config().base_sensor_config.grpc_config.server_address = f_grpc_server_ip.utf8().get_data();                        \
-    }                                                                                                                                       \
-    String CLASS::get_ros1_grpc_server_ip()                                                                                                 \
-    {                                                                                                                                       \
-        return MEMBER_NAME.get_config().base_sensor_config.grpc_config.server_address.c_str();                                              \
-    }                                                                                                                                       \
-    void CLASS::set_ros1_grpc_server_port(String f_grpc_server_port)                                                                        \
-    {                                                                                                                                       \
-        MEMBER_NAME.get_config().base_sensor_config.grpc_config.server_port = f_grpc_server_port.utf8().get_data();                         \
-    }                                                                                                                                       \
-    String CLASS::get_ros1_grpc_server_port()                                                                                               \
-    {                                                                                                                                       \
-        return MEMBER_NAME.get_config().base_sensor_config.grpc_config.server_port.c_str();                                                 \
-    }
+    }                                                                           
 
 /**
  * Macro to allow faster godot bind method creation
@@ -85,7 +69,7 @@
  *
  * @see CSensorBasicCamera
  */
-#define GDROS1PUB_DECLARE_METHODS()                            \
+#define GDROS1PUB_DECLARE_METHODS                            \
     void set_ros1_node_name(String f_node_name);               \
     String get_ros1_node_name();                               \
     void set_ros1_topic_name(String f_topic_name);             \
@@ -95,11 +79,8 @@
     void set_ros1_pub_rate(float f_pub_rate_hz);               \
     float get_ros1_pub_rate();                                 \
     void set_ros1_pub_type_rate(int f_type);                   \
-    int get_ros1_pub_type_rate();                              \
-    void set_ros1_grpc_server_ip(String f_grpc_server_ip);     \
-    String get_ros1_grpc_server_ip();                          \
-    void set_ros1_grpc_server_port(String f_grpc_server_port); \
-    String get_ros1_grpc_server_port();
+    int get_ros1_pub_type_rate();                              
+   
 
 /**
  * Macro to allow faster godot bind method creation
@@ -111,26 +92,19 @@
  *
  * @see CSensorBasicCamera
  */
-#define GDROS1PUB_BIND_METHODS(CLASS)                                                                                         \
-    ClassDB::bind_method(D_METHOD("set_ros1_node_name", "ros1_node_name"), &CLASS::set_ros1_node_name);                       \
-    ClassDB::bind_method(D_METHOD("get_ros1_node_name"), &CLASS::get_ros1_node_name);                                         \
-    ClassDB::bind_method(D_METHOD("set_ros1_topic_name", "ros1_topic_name"), &CLASS::set_ros1_topic_name);                    \
-    ClassDB::bind_method(D_METHOD("get_ros1_topic_name"), &CLASS::get_ros1_topic_name);                                       \
-    ClassDB::bind_method(D_METHOD("set_ros1_queue_size", "ros1_queue_size"), &CLASS::set_ros1_queue_size);                    \
-    ClassDB::bind_method(D_METHOD("get_ros1_queue_size"), &CLASS::get_ros1_queue_size);                                       \
-    ClassDB::bind_method(D_METHOD("set_ros1_pub_rate", "ros1_pub_rate"), &CLASS::set_ros1_pub_rate);                          \
-    ClassDB::bind_method(D_METHOD("get_ros1_pub_rate"), &CLASS::get_ros1_pub_rate);                                           \
-    ClassDB::bind_method(D_METHOD("set_ros1_pub_type_rate", "ros1_pub_type_rate"), &CLASS::set_ros1_pub_type_rate);           \
-    ClassDB::bind_method(D_METHOD("get_ros1_pub_type_rate"), &CLASS::get_ros1_pub_type_rate);                                 \
-    ClassDB::bind_method(D_METHOD("set_ros1_grpc_server_ip", "ros1_grpc_server_ip"), &CLASS::set_ros1_grpc_server_ip);        \
-    ClassDB::bind_method(D_METHOD("get_ros1_grpc_server_ip"), &CLASS::get_ros1_grpc_server_ip);                               \
-    ClassDB::bind_method(D_METHOD("get_ros1_grpc_server_port"), &CLASS::get_ros1_grpc_server_port);                           \
-    ClassDB::bind_method(D_METHOD("set_ros1_grpc_server_port", "ros1_grpc_server_port"), &CLASS::set_ros1_grpc_server_port);  \
-    \ 
-    ADD_PROPERTY(PropertyInfo(Variant::STRING, "ros1_node_name"), "set_ros1_node_name", "get_ros1_node_name");                \
-    ADD_PROPERTY(PropertyInfo(Variant::STRING, "ros1_topic_name"), "set_ros1_topic_name", "get_ros1_topic_name");             \
-    ADD_PROPERTY(PropertyInfo(Variant::INT, "ros1_queue_size"), "set_ros1_queue_size", "get_ros1_queue_size");                \
-    ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "ros1_pub_rate"), "set_ros1_pub_rate", "get_ros1_pub_rate");                    \
-    ADD_PROPERTY(PropertyInfo(Variant::INT, "ros1_pub_type_rate"), "set_ros1_pub_type_rate", "get_ros1_pub_type_rate");       \
-    ADD_PROPERTY(PropertyInfo(Variant::STRING, "ros1_grpc_server_ip"), "set_ros1_grpc_server_ip", "get_ros1_grpc_server_ip"); \
-    ADD_PROPERTY(PropertyInfo(Variant::STRING, "ros1_grpc_server_port"), "set_ros1_grpc_server_port", "get_ros1_grpc_server_port");
+#define GDROS1PUB_BIND_METHODS(CLASS)                                                                               \
+    ClassDB::bind_method(D_METHOD("set_ros1_node_name", "ros1_node_name"), &CLASS::set_ros1_node_name);             \
+    ClassDB::bind_method(D_METHOD("get_ros1_node_name"), &CLASS::get_ros1_node_name);                               \
+    ClassDB::bind_method(D_METHOD("set_ros1_topic_name", "ros1_topic_name"), &CLASS::set_ros1_topic_name);          \
+    ClassDB::bind_method(D_METHOD("get_ros1_topic_name"), &CLASS::get_ros1_topic_name);                             \
+    ClassDB::bind_method(D_METHOD("set_ros1_queue_size", "ros1_queue_size"), &CLASS::set_ros1_queue_size);          \
+    ClassDB::bind_method(D_METHOD("get_ros1_queue_size"), &CLASS::get_ros1_queue_size);                             \
+    ClassDB::bind_method(D_METHOD("set_ros1_pub_rate", "ros1_pub_rate"), &CLASS::set_ros1_pub_rate);                \
+    ClassDB::bind_method(D_METHOD("get_ros1_pub_rate"), &CLASS::get_ros1_pub_rate);                                 \
+    ClassDB::bind_method(D_METHOD("set_ros1_pub_type_rate", "ros1_pub_type_rate"), &CLASS::set_ros1_pub_type_rate); \
+    ClassDB::bind_method(D_METHOD("get_ros1_pub_type_rate"), &CLASS::get_ros1_pub_type_rate);                       \
+    ADD_PROPERTY(PropertyInfo(Variant::STRING, "ros1_node_name"), "set_ros1_node_name", "get_ros1_node_name");      \
+    ADD_PROPERTY(PropertyInfo(Variant::STRING, "ros1_topic_name"), "set_ros1_topic_name", "get_ros1_topic_name");   \
+    ADD_PROPERTY(PropertyInfo(Variant::INT, "ros1_queue_size"), "set_ros1_queue_size", "get_ros1_queue_size");      \
+    ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "ros1_pub_rate"), "set_ros1_pub_rate", "get_ros1_pub_rate");          \
+    ADD_PROPERTY(PropertyInfo(Variant::INT, "ros1_pub_type_rate"), "set_ros1_pub_type_rate", "get_ros1_pub_type_rate");

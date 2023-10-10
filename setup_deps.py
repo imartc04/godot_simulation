@@ -3,16 +3,31 @@ import os
 import argparse
 
 
-def gen_setup(out_file, config):
+def gen_setup(f_args):
+
+    config = f_args.config
+    out_file = f_args.out_file
+
+    l_build_option = "missing"
+
+    if f_args.force_build == "y":
+        l_build_option = '*'
 
 
-    conan_cmd = f"conan install . --output-folder=build/conan/{config} --build=missing -s compiler.cppstd=17 -s compiler=gcc -s:b compiler.cppstd=17 -s:b compiler=gcc -s build_type={config} -s:b build_type={config}"
+    l_compiler = f_args.compiler
+    conan_cmd = ""
+    if l_compiler == "gcc":
 
-    # conan_cmd = f"conan install . --output-folder=build/conan/{config} --build=missing -s compiler.libcxx=libc++ -s:b compiler.libcxx=libc++  -s compiler.cppstd=17 -s:b compiler.cppstd=17 -s compiler=clang -s:b compiler=clang -s compiler.version=12 -s:b compiler.version=12 -s build_type={config} -s:b build_type={config}"
+        conan_cmd = f"conan install . --output-folder=build/conan/{config} --build={l_build_option} -pr:h conan/gcc_profile -pr:b conan/gcc_profile -s build_type={config} -s:b build_type={config}"
+    elif l_compiler == "clang-12":
 
-#     tools.build:exelinkflags: List of extra flags used by CMakeToolchain for CMAKE_EXE_LINKER_FLAGS_INIT variable
+        conan_cmd = f"conan install . --output-folder=build/conan/{config} --build={l_build_option} -pr:h conan/clang12_profile -pr:b conan/clang12_profile -s build_type={config} -s:b build_type={config}"
+    elif l_compiler == "clang-10":
 
-# tools.build:sharedlinkflags:
+        conan_cmd = f"conan install . --output-folder=build/conan/{config} --build={l_build_option} -pr:h conan/clang10_profile -pr:b conan/clang10_profile -s build_type={config} -s:b build_type={config}"
+    else:
+        raise Exception("Error, compiler not supported")
+
 
     if out_file != "":
         print(f"Redirecting output to file: {out_file}")
@@ -36,6 +51,10 @@ if __name__ == "__main__":
     parser.add_argument('--out-file', default="aux_gen/setup_res.sh", help='Name of the file where to redirect the commands output instead of console. If emtpy string passed then output will be in the console (default: aux_gen/setup_res.sh)')
     parser.add_argument('--config', default="all", help='Configuration to compile deps (default: all, options: all, Debug, Release)')
 
+    parser.add_argument("--force-build", default="n", help="Force build all packages. If not set only not conan prebuilt avaliables are built (default:n, options: y,n)")
+
+    parser.add_argument("--compiler", default="gcc", help="Which compiler to use.  (default value gcc, options:gcc, clang-10, clang-12). gcc compiler is used with ld gnu linker, clang with lld one")
+
     # Parse the command-line arguments
     args = parser.parse_args()
 
@@ -44,7 +63,11 @@ if __name__ == "__main__":
     #Generate in function of the configuration
 
     if args.config == "all":
-        gen_setup(args.out_file, "Debug")
-        gen_setup(args.out_file, "Release")
+        args.config = "Debug"
+        gen_setup(args)
+
+        args.config = "Release"
+        gen_setup(args)
+
     else:
-        gen_setup(args.out_file, args.config)
+        gen_setup(args)

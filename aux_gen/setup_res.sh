@@ -9,6 +9,10 @@ compiler.cppstd=17
 compiler.libcxx=libstdc++11
 compiler.version=9
 os=Linux
+[buildenv]
+CC=/usr/bin/gcc
+CXX=/usr/bin/g++
+LD=/usr/bin/ld
 
 Profile build:
 [settings]
@@ -19,6 +23,10 @@ compiler.cppstd=17
 compiler.libcxx=libstdc++11
 compiler.version=9
 os=Linux
+[buildenv]
+CC=/usr/bin/gcc
+CXX=/usr/bin/g++
+LD=/usr/bin/ld
 
 
 ======== Computing dependency graph ========
@@ -66,9 +74,9 @@ protobuf/3.21.12: Already installed! (8 of 9)
 grpc/1.54.3: Already installed! (9 of 9)
 grpc/1.54.3: Appending PATH environment variable: /root/.conan2/p/b/grpcb5a9934422396/p/bin
 WARN: deprecated: Usage of deprecated Conan 1.X features that will be removed in Conan 2.X:
-WARN: deprecated:     'cpp_info.names' used in: abseil/20230125.3, c-ares/1.19.1, grpc/1.54.3, zlib/1.2.13, openssl/3.1.2, protobuf/3.21.12
-WARN: deprecated:     'cpp_info.build_modules' used in: grpc/1.54.3, abseil/20230125.3, openssl/3.1.2, protobuf/3.21.12
-WARN: deprecated:     'env_info' used in: c-ares/1.19.1, grpc/1.54.3, cmake/3.27.5, openssl/3.1.2, protobuf/3.21.12
+WARN: deprecated:     'cpp_info.names' used in: abseil/20230125.3, zlib/1.2.13, c-ares/1.19.1, protobuf/3.21.12, grpc/1.54.3, openssl/3.1.2
+WARN: deprecated:     'cpp_info.build_modules' used in: protobuf/3.21.12, grpc/1.54.3, openssl/3.1.2, abseil/20230125.3
+WARN: deprecated:     'env_info' used in: cmake/3.27.5, c-ares/1.19.1, protobuf/3.21.12, grpc/1.54.3, openssl/3.1.2
 WARN: deprecated:     'cpp_info.filenames' used in: protobuf/3.21.12
 
 ======== Finalizing install (deploy, generators) ========
