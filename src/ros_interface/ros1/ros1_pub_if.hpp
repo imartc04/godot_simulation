@@ -1,5 +1,7 @@
 #pragma once
 
+#include "aux_depend_storage.hpp"
+
 #include <memory>
 
 // Interface class to manage and publish ROS1 topics
@@ -8,7 +10,7 @@
  * Interface class to manage ROS 1 publishers of different types of ROS 1 messages
  *
  */
-class CRos1PublisherInterface
+class CRos1PublisherInterface : public CAuxDependStorage
 {
 
 public:
@@ -35,16 +37,4 @@ public:
      */
     virtual void publish_loop() = 0;
 
-    /**
-     * Add object dependency to avoid destruction of the object
-     * Used for interaction between object callbacks due isolation of
-     * ROS in shared libraries
-     */
-    void add_obj_dep(std::shared_ptr<void> f_obj_dep);
-    {
-        m_obj_dep.push_back(f_obj_dep);
-    }
-
-private:
-    std::vector<std::shared_ptr<void>> m_obj_dep;
 };

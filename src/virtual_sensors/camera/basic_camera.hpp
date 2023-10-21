@@ -305,13 +305,13 @@ namespace godot
         //  */
         // bool get_initialized();
 
-        /** Map godot image format to ROS image format
-         *
-         */
-        std::map<Image::Format, std::string> m_map_godot_img_format_to_ros_img_format{
-            {Image::Format::FORMAT_RGB8, "rgb8"},
-            {Image::Format::FORMAT_RGBA8, "rgba8"},
-            {Image::Format::FORMAT_RGB8, "rgb8"}};
+        // /** Map godot image format to ROS image format
+        //  *
+        //  */
+        // std::map<Image::Format, std::string> m_map_godot_img_format_to_ros_img_format{
+        //     {Image::Format::FORMAT_RGB8, "rgb8"},
+        //     {Image::Format::FORMAT_RGBA8, "rgba8"},
+        //     {Image::Format::FORMAT_RGB8, "rgb8"}};
 
         /**
          * Structure that holds all the data related to the image generation callback

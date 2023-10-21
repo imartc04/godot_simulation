@@ -137,47 +137,47 @@ void CSensorBasicCamera::_process(float delta)
   
 }
 
-void CSensorBasicCamera::parse_godot_out_image(uint64_t f_seq_id)
-{
+// void CSensorBasicCamera::parse_godot_out_image(uint64_t f_seq_id)
+// {
 
-    auto &l_out_img = m_image_buf.out_image;
+//     auto &l_out_img = m_image_buf.out_image;
 
-    // Convert godot image to grpc imageMsg
-    l_out_img.set_height(m_image_buf.read_buf->get_height());
-    l_out_img.set_width(m_image_buf.read_buf->get_width());
-    l_out_img.set_encoding(m_map_godot_img_format_to_ros_img_format[m_image_buf.read_buf->get_format()]);
-    l_out_img.set_is_bigendian(false);
-    // l_out_img.set_step(m_image_buf.read_buf->get_width() * 3 * sizeof(uint8_t));
+//     // Convert godot image to grpc imageMsg
+//     l_out_img.set_height(m_image_buf.read_buf->get_height());
+//     l_out_img.set_width(m_image_buf.read_buf->get_width());
+//     l_out_img.set_encoding(m_map_godot_img_format_to_ros_img_format[m_image_buf.read_buf->get_format()]);
+//     l_out_img.set_is_bigendian(false);
+//     // l_out_img.set_step(m_image_buf.read_buf->get_width() * 3 * sizeof(uint8_t));
 
-    // Set data
-    ::godot::PackedByteArray l_data = m_image_buf.read_buf->get_data();
+//     // Set data
+//     ::godot::PackedByteArray l_data = m_image_buf.read_buf->get_data();
 
-    auto l_num_data = l_data.size();
+//     auto l_num_data = l_data.size();
 
-    l_out_img.set_step(l_num_data / l_out_img.height());
+//     l_out_img.set_step(l_num_data / l_out_img.height());
 
-    // Resize out array
-    l_out_img.mutable_uint8_data()->Resize(l_num_data, 0u);
+//     // Resize out array
+//     l_out_img.mutable_uint8_data()->Resize(l_num_data, 0u);
 
-    // std::memcpy(&m_msg->data[0], img->get_data().ptrw(), img->get_data().size());
-    for (int64_t i_idx = 0; i_idx < l_num_data; i_idx++)
-    {
-        l_out_img.set_uint8_data(i_idx, l_data[i_idx]);
-    }
+//     // std::memcpy(&m_msg->data[0], img->get_data().ptrw(), img->get_data().size());
+//     for (int64_t i_idx = 0; i_idx < l_num_data; i_idx++)
+//     {
+//         l_out_img.set_uint8_data(i_idx, l_data[i_idx]);
+//     }
 
-    // out height
-    auto l_out_height = l_out_img.height();
-    // out width
-    auto l_out_width = l_out_img.width();
-    // out data size
-    auto l_out_data_size = l_out_img.uint8_data_size();
+//     // out height
+//     auto l_out_height = l_out_img.height();
+//     // out width
+//     auto l_out_width = l_out_img.width();
+//     // out data size
+//     auto l_out_data_size = l_out_img.uint8_data_size();
 
-    // Print generated image height, withd and num of data
-    cout << "+++++ Callback 1 Image height : " << l_out_img.height() << ", width : " << l_out_img.width() << ", array data size " << l_out_img.uint8_data_size() << endl;
+//     // Print generated image height, withd and num of data
+//     cout << "+++++ Callback 1 Image height : " << l_out_img.height() << ", width : " << l_out_img.width() << ", array data size " << l_out_img.uint8_data_size() << endl;
 
-    // Set frame id
-    l_out_img.set_frame_id(f_seq_id);
-}
+//     // Set frame id
+//     l_out_img.set_frame_id(f_seq_id);
+// }
 
 ::godot_grpc::simple_camera_service::imageMsg CSensorBasicCamera::gen_image_callback()
 {

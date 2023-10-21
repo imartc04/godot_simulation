@@ -69,16 +69,16 @@ void CGRPCImageToRos1::parse_grpc_msg_to_ros1_msg(const ::godot_grpc::simple_cam
 }
 
 // Callback function to generate ros1 message from shared memory passed data
-void CGRPCImageToRos1::gen_ros1_img_data(::sensor_msgs::Image &f_ros1_msg)
+void CGRPCImageToRos1::gen_data(::sensor_msgs::Image &f_ros1_msg)
 {
 
     // Get new image from callback
-    auto l_image = m_config.gen_img();
+    m_config.gen_img(m_msg);
 
     if (l_status.ok())
     {
         // Parse gRPC message to ros1 message
-        parse_grpc_msg_to_ros1_msg(l_reply, f_ros1_msg);
+        parse_grpc_msg_to_ros1_msg(l_reply, m_msg);
     }
     else
     {

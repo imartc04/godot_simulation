@@ -58,36 +58,6 @@ void help()
 }
 
 
-std::shared_ptr<CRos1PublisherInterface> create_ros1_pub_image(Channel &f_channel)
-{
-
-    auto l_stub = ::godot_grpc::simple_camera_service::SimpleCameraService::NewStub(f_channel);
-
-    auto l_ros1_pub = make_shared<CRos1Publisher<::sensor_msgs::Image>>();
-
-    // Get ROS config from server
-    ::grpc::ClientContext l_context;
-    ::godot_grpc::ros1::ROS1PublisherConfig l_ros_config;
-    ::godot_grpc::emptyMsg l_req;
-    auto l_status = l_stub->getROSConfig(&l_context, l_req, &l_ros_config);
-
-    auto ros1_pub = make_shared<CRos1Publisher<::sensor_msgs::Image>>();
-
-    // Create ROS1 publisher config data
-    auto ros1_pub_config = make_shared<::godot::CRos1PublisherConfig<::sensor_msgs::Image>>();
-
-    // Set callback functino in ros1 publisher config data
-
-    ros1_pub_config->f_get_message = std::bind(gen_ros1_img_data, std::placeholders::_1);
-    ros1_pub_config->proto_config = std::move(l_ros_config);
-
-    // Set ros1 publisher config data
-    ros1_pub->set_config(*ros1_pub_config);
-
-    return std::static_pointer_cast<CRos1PublisherInterface>(ros1_pub);
-}
-
-
 
 std::shared_ptr<CRos1PublisherInterface> create_ros1_joint_control(Channel &f_channel)
 {
