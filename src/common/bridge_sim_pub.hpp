@@ -2,7 +2,7 @@
 
 #include <array>
 #include <memory>
-#include "interfaces/pub_buffer_if.hpp"
+#include "common/pub_buffer_if.hpp"
 #include <functional>
 
 template <typename t_sim_data, typename t_pub_type>

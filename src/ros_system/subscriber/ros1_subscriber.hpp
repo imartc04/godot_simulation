@@ -32,6 +32,10 @@ private:
     /******************* METHODS *******************/
 
 public:
+
+    typedef CROSSubscribConfig<t_ros1_msg> t_config;
+    typedef t_ros1_msg t_msg; 
+
     CROS1Subscriber(/* args */){
 
     };
@@ -48,6 +52,13 @@ public:
 
     };
 
+
+    void set_config(CROSSubscribConfig<t_ros1_msg> & f_config)
+    {
+        m_config = f_config;
+    }
+
+
     /**
      * Thread method
      */
@@ -56,13 +67,13 @@ public:
         ros::spin();
     }
 
-    void stop() override
+    void stop()
     {
         // Stop ros1 node
         ros::shutdown();
     }
 
-    void init() override
+    void init() 
     {
 
         // Check if ros is initialized

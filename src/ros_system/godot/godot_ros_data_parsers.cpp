@@ -52,3 +52,21 @@ void godotImgtoROSImg(uint64_t f_seq_id, uint64_t f_frame_id, ::godot::Image &f_
 
 
 }
+
+
+void godotJointDataToROSStr(CJointData& f_in, ::standar_msgs::String& f_out)
+{
+
+    //Parse joint data to std::string
+    jointDataToJsonString(f_in, f_out.data);
+
+}
+
+
+/**
+ * Parse from CJointData to ros string
+*/
+void godotROSStrToJointData(::standar_msgs::String& f_in, CJointData& f_out);
+{
+    jsonStringToJointData(f_in.data, f_out);
+}

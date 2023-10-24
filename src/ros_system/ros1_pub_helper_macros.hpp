@@ -17,48 +17,48 @@
  *
  * @see CSensorBasicCamera
  */
-#define GDROS1PUB_DEF_METHODS(CLASS, MEMBER_NAME, ROS1_MSG_TYPE)                                                                            \
+#define GDROS1PUB_DEF_METHODS(CLASS, MEMBER_NAME)                                                                            \
     void CLASS::set_ros1_node_name(String f_node_name)                                                                                      \
     {                                                                                                                                       \
-        MEMBER_NAME.get_config().base_sensor_config.ros1_pub_config.set_node_name(f_node_name.utf8().get_data());                           \
+                                   \
     }                                                                                                                                       \
                                                                                                                                             \
     String CLASS::get_ros1_node_name()                                                                                                      \
     {                                                                                                                                       \
-        return MEMBER_NAME.get_config().base_sensor_config.ros1_pub_config.node_name().c_str();                                             \
+        return ::godot::String();                                             \
     }                                                                                                                                       \
                                                                                                                                             \
     void CLASS::set_ros1_topic_name(String f_topic_name)                                                                                    \
     {                                                                                                                                       \
-        MEMBER_NAME.get_config().base_sensor_config.ros1_pub_config.set_topic_name(f_topic_name.utf8().get_data());                         \
+        MEMBER_NAME.topic_name = f_topic_name.utf8().get_data();                         \
     }                                                                                                                                       \
     String CLASS::get_ros1_topic_name()                                                                                                     \
     {                                                                                                                                       \
-        return MEMBER_NAME.get_config().base_sensor_config.ros1_pub_config.topic_name().c_str();                                            \
+        return MEMBER_NAME.topic_name.c_str();                                            \
     }                                                                                                                                       \
     void CLASS::set_ros1_queue_size(int f_queue_size)                                                                                       \
     {                                                                                                                                       \
-        MEMBER_NAME.get_config().base_sensor_config.ros1_pub_config.set_queue_size(f_queue_size);                                           \
+        MEMBER_NAME.queue_size = f_queue_size;                                           \
     }                                                                                                                                       \
     int CLASS::get_ros1_queue_size()                                                                                                        \
     {                                                                                                                                       \
-        return MEMBER_NAME.get_config().base_sensor_config.ros1_pub_config.queue_size();                                                    \
+        return MEMBER_NAME.queue_size;                                                    \
     }                                                                                                                                       \
     void CLASS::set_ros1_pub_rate(float f_pub_rate_hz)                                                                                      \
     {                                                                                                                                       \
-        MEMBER_NAME.get_config().base_sensor_config.ros1_pub_config.set_pub_rate_hz_f32(f_pub_rate_hz);                                     \
+        MEMBER_NAME.pub_rate = f_pub_rate_hz;                                     \
     }                                                                                                                                       \
     float CLASS::get_ros1_pub_rate()                                                                                                        \
     {                                                                                                                                       \
-        return MEMBER_NAME.get_config().base_sensor_config.ros1_pub_config.pub_rate_hz_f32();                                               \
+        return MEMBER_NAME.pub_rate;                                               \
     }                                                                                                                                       \
     void CLASS::set_ros1_pub_type_rate(int f_type)                                                                                          \
     {                                                                                                                                       \
-        MEMBER_NAME.get_config().base_sensor_config.ros1_pub_config.set_pub_type(static_cast<::godot_grpc::ros1::ROS1PublishType>(f_type)); \
+        \
     }                                                                                                                                       \
     int CLASS::get_ros1_pub_type_rate()                                                                                                     \
     {                                                                                                                                       \
-        return static_cast<int>(MEMBER_NAME.get_config().base_sensor_config.ros1_pub_config.pub_type());                                    \
+        return 0;                                    \
     }                                                                           
 
 /**

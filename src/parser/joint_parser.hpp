@@ -8,7 +8,7 @@
 /**
  * Function to parse from std::string to CJointData
  */
-static void stringToJointData(std::string &f_string, CJointData &f_joint)
+static void jsonStringToJointData(std::string &f_string, CJointData &f_joint)
 {
 
     // Parse the JSON string

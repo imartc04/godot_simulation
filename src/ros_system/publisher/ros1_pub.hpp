@@ -27,7 +27,8 @@ class CRos1Publisher
 {
 
 public:
-    typename CROSPubConfig<t_message_type> t_config;
+    typedef CROSPubConfig<t_message_type> t_config;
+    typedef t_message_type t_msg;
 
 private:
     // CAuxInitRos m_aux_ros_init;

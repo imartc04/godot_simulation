@@ -113,14 +113,14 @@ def urdf_pos_to_tscn_transform(f_urdf_pos):
     #Create origin vector
     l_origin_vector = urdf_to_godot_vec(np.array[f_urdf_pos.x, f_urdf_pos.y, f_urdf_pos.z])
 
-    return "transform = Transform3D(" + str(l_final_rotation_matrix[0,0]) + ", " + str(l_final_rotation_matrix[1,0]) + ", " + str(l_final_rotation_matrix[2,0]) + ", " + str(l_final_rotation_matrix[0,1]) + ", " + str(l_final_rotation_matrix[1,1]) + ", " + str(l_final_rotation_matrix[2,1]) + str(l_final_rotation_matrix[2,0]) + ", " + str(l_final_rotation_matrix[2,1]) + ", " + str(l_final_rotation_matrix[2,2]) + str(l_origin_vector[0]) + ", " + str(l_origin_vector[1]) + ", " +str(l_origin_vector[2]) + ")"          
+    return f'''{l_final_rotation_matrix[0,0]}, {l_final_rotation_matrix[1,0]}, {l_final_rotation_matrix[2,0]} , {l_final_rotation_matrix[0,1]} ,{l_final_rotation_matrix[1,1]}, {l_final_rotation_matrix[2,1]}, {l_final_rotation_matrix[2,0]} , {l_final_rotation_matrix[2,1]}, {l_final_rotation_matrix[2,2]}, {l_origin_vector[0]}, {l_origin_vector[1]}, {l_origin_vector[2]}'''          
 
 def get_filename_and_ext_from_path(f_path):
     return os.path.splitext(os.path.basename(f_path))
 
 
 
-def genrate_link_visual_nodes(f_link_visuals, f_link_node, f_sub_resources, f_extern_resources, f_out_dir):
+def genrate_link_visual_nodes(f_link_visuals, f_sub_resources, f_extern_resources, f_out_dir):
 
     for  link_data in f_link_visuals:
             
@@ -129,10 +129,8 @@ def genrate_link_visual_nodes(f_link_visuals, f_link_node, f_sub_resources, f_ex
             for visual in link_data.visuals:
                 l_visual_node = Node("visual", data=visual, parent=l_link_node)
                 
-
                 #Generate tscn string for the visual
                 l_tscn_header = '[node name=' + visual.name + '"parent="' + key + '"'
-
 
                 l_tscn_props = urdf_pos_to_tscn_transform(visual.origin)
 
@@ -224,25 +222,108 @@ def genrate_link_visual_nodes(f_link_visuals, f_link_node, f_sub_resources, f_ex
             l_link_nodes[key] = l_link_node
 
 
-def generate_link_nodes(f_urdf_python_links, f_out_dir, f_sub_resources, f_extern_resources):
 
-    l_link_nodes = {}
+def create_godot_rigid_body_str(f_name, f_parent, f_transform, f_mass_str = "1.0", f_mass_center_mode = 1, f_mass_center_vec = "0.0, 0.0, 0.0"):
 
-    l_sub_resources = []
+    l_ret = f'''[node name="{f_name}" type="RigidBody3D" parent="{f_parent}"]
+transform = Transform3D({f_transform}) 
+mass = {f_mass_str}
+'''
 
-    l_external_resources = []
+    if f_mass_center_mode == 1:
+        l_ret = f'''{l_ret} 
+        center_of_mass_mode = 1
+    center_of_mass = Vector3({f_mass_center_vec})'''
 
-    #Create link nodes and link child data
+    return l_ret
+
+
+def generate_link_nodes(f_urdf_python_links, f_out_dir, f_sub_resources_str, f_extern_resources_str, tscn_body_str, f_obj_parent_tree, f_mass_center_mode):
+
+    """
+    Each link will be represented by a Godot rigid body.
+    The rigid body will have a set of 3D meshes, a set of collision objects and
+    optionally a set of associated joints
+
+    """
     for key, link_data in f_urdf_python_links.items():
 
-        #Create link node
-        l_link_node = Node(key)
-        l_link_nodes[key] = l_link_node
+        """
+        Create link rigid body
+        Note that the Godot rigid body allows to set the center of mass a vector relative to the rigid body object. 
+        However URDF defines directly the position and orientation of the center of mass system. So to parse from one format 
+        to the othe the solution adopted is to set the transform3D of the Godot rigid body as the URDF inertial system with a 
+        vector with center of mass of (0, 0, 0)
+        """
+        tscn_body_str += create_godot_rigid_body_str(link_data.name, f_obj_parent_tree[link_data.name], urdf_pos_to_tscn_transform(link_data.inertial.pose),link_data.inertial.mass)
 
-        genrate_link_visual_nodes(link_data.visuals, l_link_node, l_sub_resources, l_external_resources, f_out_dir)
+        genrate_link_visual_nodes(link_data.visuals, l_sub_resources, l_external_resources, f_out_dir)
 
     return l_link_nodes
 
+
+
+def search_link_child_by_name(f_joints, f_name):
+    
+        ret_joint = None
+    
+        for joint in f_joints:
+    
+            if joint.name == f_name:
+                ret_joint = joint
+                break
+    
+        return ret_joint
+
+
+"""
+Function that generates the objec parenting tree to with data
+needed to put in the tscn object parent properties
+"""
+def generate_obj_tree(f_joints, f_root_name):
+
+    #Return object tree
+    ret_obj_tree = {}
+
+
+    for joint in f_joints:
+
+        link_path = ""
+        parent = joint.parent
+
+        #Get the full path of the element until the root node
+        while (parent := search_link_child_by_name(f_joints, parent) ) != None:
+
+            link_path = parent + "/" + link_path
+            
+
+        #Add child of this joint to the object tree if needed
+        if joint.child not in ret_obj_tree:
+            ret_obj_tree[joint.child] = link_path
+
+        #Add joint the the object tree if needed
+        if joint.name not in ret_obj_tree:
+            ret_obj_tree[joint.name] = link_path
+
+        #Split link_path add add to the object tree the rest of elements if needed
+        link_path_split = link_path.split("/")
+
+        root_link = link_path_split.pop(0)
+
+        #Add root link to parent tree with its name
+        if root_link not in ret_obj_tree:
+            ret_obj_tree[root_link] = root_link
+
+        #Add the rest of link paths to 
+        accum_path = root_link
+
+        for i in link_path_split:
+            if i not in ret_obj_tree:
+                ret_obj_tree[i] = accum_path
+
+            accum_path = accum_path + "/" + i
+
+    return ret_obj_tree
 
 
 
@@ -250,10 +331,13 @@ def urdf_python_to_tscn(f_urdf_python, f_outDir, f_tscn_name):
 
     l_link_nodes = {}
 
-    l_sub_resources = []
-    l_extern_resources = []
+    l_sub_resources_str = ""
+    l_extern_resources_str = ""
+
+    #Generate parenting tree for link and joint objects
+    l_obj_tree = generate_obj_tree(f_urdf_python["joints"])
 
     #Generate link nodes
-    l_link_nodes = generate_link_nodes(f_urdf_python.links, f_outDir, l_sub_resources, l_extern_resources)
+    l_link_nodes = generate_link_nodes(f_urdf_python["links"], f_outDir, l_sub_resources_str, l_extern_resources_str)
 
 

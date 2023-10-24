@@ -7,16 +7,19 @@
 
 /**
  * Parameters to configure a ROS subscriber node
-*/
-template<typename t_subs_data>
+ */
+template <typename t_subs_data>
 struct CROSSubscribConfig
 {
 
-    CRosSubsSimConfig gen_config;
+    bool enabled = false;
+
+    std::string topic_name;
+
+    uint32_t queue_size = 10u;
 
     /**
      * Callback function used by the subscriber when new data is received
-    */
-    std::function< void  (t_subs_data const & )> new_data_func;
-
+     */
+    std::function<void(t_subs_data &)> new_data_func;
 };
